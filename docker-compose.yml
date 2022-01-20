@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+    flask:
+        build:
+            context: ./flaskr
+            dockerfile: Dockerfile
+        ports:
+            - "5000:5000"
+        links:
+            - db
+        #depends_on:
+        #    - db
+    redis:
+        image: redis
+        ports:
+            - "6369:6379"
+    app:
+        build:
+            context: ./src
+            dockerfile: Dockerfile
+        depends_on:
+            - redis
+        command: celery -A tasks worker --loglevel=info
+    db:
+        container_name: mysql
+        image: mysql/mysql-server:latest
+        command: mysqld --default-authentication-plugin=mysql_native_password
+        environment:
+            MYSQL_ROOT_PASSWORD: pass
+        ports:
+            - "32000:3306"
+        volumes:
+      # init.sql로 db 초기화(ro는 읽기전용)
+            - ./db/mysql-init-file:/docker-entrypoint-initdb.d/:ro
+            - ./db/data:/var/lib/mysql
