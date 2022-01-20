@@ -17,7 +17,7 @@ services:
             - "6369:6379"
     app:
         build:
-            context: ./src
+            context: ./worker
             dockerfile: Dockerfile
         depends_on:
             - redis
