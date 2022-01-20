@@ -11,7 +11,7 @@ COPY . /queue
 WORKDIR /queue
 
 RUN pip install celery[redis]
-# RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt
 
 # prevent cv2 import error (numpy error)
 RUN apt-get update
