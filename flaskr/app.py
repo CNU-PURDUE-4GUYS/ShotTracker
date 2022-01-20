@@ -4,10 +4,9 @@ import uuid
 import json
 import base64
 from io import BytesIO
-
-app = Flask(__name__)
-
-config = {
+# make Connection to MySQL
+def getSqlConnection():
+    config = {
         "user": "root",
         "host": "db",
         "port": "3306",
@@ -15,10 +14,17 @@ config = {
         "database": "mytest",
         "auth_plugin": "mysql_native_password",
 }
+    connection = mysql.connector.connect(**config)
+    return connection
 
 
-@app.route("/upload",methods=["GET","POST"])
-def hello_world():
+app = Flask(__name__)
+
+
+
+
+# receive and save image from JSON Request
+def getImgFromJsonRequest(request):
     dict_data = request.get_json() #Get the POSTed json
     img = dict_data["img"] #Take out base64# str
     #print(img)
@@ -34,10 +40,22 @@ def hello_world():
         }
     return jsonify(response)
 
+
+@app.route("/upload",methods=["GET","POST"])
+def hello_world():
+    # res = getImgFromJsonRequest(request)
+    return "hello world"
+
+
 @app.route("/")
 def index():
-    connection = mysql.connector.connect(**config)
-    return "Hello Wolford"
+    DB = getSqlConnection()
+    cursor = DB.cursor()
+    sql = """
+        SELECT * from target """
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return str(result)
 
 @app.route("/greeting/")
 def greeting():

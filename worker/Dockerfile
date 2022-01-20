@@ -12,8 +12,6 @@ WORKDIR /queue
 
 RUN python -m pip install --upgrade pip
 RUN pip install celery[redis]
-
-# YoloV5 requirements Download
 RUN pip install -r requirements.txt
 
 # prevent cv2 import error (numpy error)
