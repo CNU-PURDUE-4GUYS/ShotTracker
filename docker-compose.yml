@@ -9,8 +9,8 @@ services:
             - "5000:5000"
         links:
             - db
-        #depends_on:
-        #    - db
+        depends_on:
+            - db
     redis:
         image: redis
         ports:
