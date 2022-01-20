@@ -6,9 +6,10 @@ services:
             context: ./flaskr
             dockerfile: Dockerfile
         ports:
-            - "5000:5000"
+            - "5001:5000"
         links:
             - db
+        restart: always
         #depends_on:
         #    - db
     redis:
@@ -17,7 +18,7 @@ services:
             - "6369:6379"
     app:
         build:
-            context: ./src
+            context: ./worker
             dockerfile: Dockerfile
         depends_on:
             - redis

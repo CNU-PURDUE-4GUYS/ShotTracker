@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.7
 
 ENV CELERY_BROKER_URL redis://redis:6379/0
 ENV CELERY_RESULT_BACKEND redis://redis:6379/0
@@ -10,8 +10,11 @@ ENV C_FORCE_ROOT true
 COPY . /queue
 WORKDIR /queue
 
+RUN python -m pip install --upgrade pip
 RUN pip install celery[redis]
-# RUN pip install -r requirements.txt
+
+# YoloV5 requirements Download
+RUN pip install -r requirements.txt
 
 # prevent cv2 import error (numpy error)
 RUN apt-get update
