@@ -1,25 +1,23 @@
 from flask import Flask,jsonify,request
-import mysql.connector
+
+
 import uuid
 import json
 import base64
 from io import BytesIO
-# make Connection to MySQL
-def getSqlConnection():
-    config = {
-        "user": "root",
-        "host": "db",
-        "port": "3306",
-        "password": "pass",
-        "database": "mytest",
-        "auth_plugin": "mysql_native_password",
-}
-    connection = mysql.connector.connect(**config)
-    return connection
+import os
+
+
+from myworker import celery
+from dbconnection import getSqlConnection
+
+
+
+
+
 
 
 app = Flask(__name__)
-
 
 
 
@@ -59,4 +57,7 @@ def index():
 
 @app.route("/greeting/")
 def greeting():
+    celery.send_task(
+            "hello"
+        )
     return "Nice to see you"
