@@ -24,12 +24,12 @@ def uploadImage():
     return res
 
 
-@app.route("/")
+@app.route("/getConnection")
 def index():
     DB = getSqlConnection()
     cursor = DB.cursor()
     sql = """
-        SELECT * from target """
+        SELECT * from images """
     cursor.execute(sql)
     result = cursor.fetchall()
     return str(result)
