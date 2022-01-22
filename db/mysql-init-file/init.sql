@@ -3,14 +3,25 @@ grant all privileges on *.* to 'root'@'%';
 CREATE DATABASE mytest;
 use mytest;
 
-CREATE TABLE target(
-                 target_id INT AUTO_INCREMENT,
-                 x INT,
-                 y INT,
-                 w INT,
-                 h INT,
-                 PRIMARY KEY(target_id));
+CREATE TABLE images(
+                id INT AUTO_INCREMENT NOT NULL,
+                setid VARCHAR(36) NOT NULL,
+                imgid VARCHAR(36) NOT NULL,
+                saveddate datetime NOT NULL
+                PRIMARY KEY(id)
+                );
 
-INSERT INTO target(x, y, w, h) VALUES (32, 23, 10, 10);
-INSERT INTO target(x, y, w, h) VALUES (493, 482, 10, 10);
-INSERT INTO target(x, y, w, h) VALUES (239, 129, 10, 10);
+CREATE TABLE bullets(
+            bulletid INT AUTO_INCREMENT NOT NULL,
+            imgid VARCHAR(36) NOT NULL,
+            PRIMARY KEY(bulletid)
+)
+
+CREATE TABLE targets(
+            targetid INT AUTO_INCREMENT NOT NULL,
+            imgid VARCHAR(36) NOT NULL,
+            PRIMARY KEY(targetid)
+)
+
+
+INSERT INTO images VALUES (NULL,"3d7cd635-c41e-468a-b485-2147313a37d2", "3d7cd635-c41e-468a-b485-2147313a37d2", '1998-01-23 12:45:56', );
