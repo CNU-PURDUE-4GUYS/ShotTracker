@@ -31,6 +31,7 @@ services:
             MYSQL_ROOT_PASSWORD: pass
         ports:
             - "32000:3306"
+        restart: always
         volumes:
       # init.sql로 db 초기화(ro는 읽기전용)
             - ./db/mysql-init-file:/docker-entrypoint-initdb.d/:ro
