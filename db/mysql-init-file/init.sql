@@ -4,21 +4,21 @@ CREATE DATABASE mytest;
 use mytest;
 
 CREATE TABLE images(
-                id INT AUTO_INCREMENT NOT NULL,
+                id INT AUTO_INCREMENT,
                 setid VARCHAR(36) NOT NULL,
                 imgid VARCHAR(36) NOT NULL,
-                saveddate datetime NOT NULL
+                saveddate datetime NOT NULL,
                 PRIMARY KEY(id)
                 );
 
 CREATE TABLE bullets(
-            bulletid INT AUTO_INCREMENT NOT NULL,
+            bulletid INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             PRIMARY KEY(bulletid)
 )
 
 CREATE TABLE targets(
-            targetid INT AUTO_INCREMENT NOT NULL,
+            targetid INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             PRIMARY KEY(targetid)
 )
