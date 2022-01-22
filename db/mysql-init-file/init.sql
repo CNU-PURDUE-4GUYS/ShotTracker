@@ -15,13 +15,13 @@ CREATE TABLE bullets(
             bulletid INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             PRIMARY KEY(bulletid)
-)
+);
 
 CREATE TABLE targets(
             targetid INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             PRIMARY KEY(targetid)
-)
+);
 
 
 INSERT INTO images VALUES (NULL,"3d7cd635-c41e-468a-b485-2147313a37d2", "3d7cd635-c41e-468a-b485-2147313a37d2", '1998-01-23 12:45:56', );
