@@ -11,3 +11,12 @@ def getSqlConnection():
     }
     connection = mysql.connector.connect(**config)
     return connection
+
+
+def executeQuery(query):
+    DB = getSqlConnection()
+    cursor = DB.cursor()
+    sql = query
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    return str(result)

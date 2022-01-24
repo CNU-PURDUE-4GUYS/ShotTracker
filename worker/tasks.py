@@ -17,8 +17,8 @@ def hello():
 
 # do yolo work here
 @celery.task(name="yolowork")
-def yolowork():
-    print("yolo work")
+def yolowork(img_id):
+    print(img_id)
     return
 
 # do image process here
