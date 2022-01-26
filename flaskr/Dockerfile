@@ -19,6 +19,7 @@ ENV FLASK_RUN_HOST 0.0.0.0
 
 WORKDIR /app
 COPY . /app
+RUN pip install Pillow
 
 ADD requirements.txt .
 RUN pip install -r requirements.txt

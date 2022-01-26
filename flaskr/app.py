@@ -1,15 +1,9 @@
 from flask import Flask,jsonify,request
-
-
 import json
 from transmitter import *
 from myworker import celery
-from dbconnection import getSqlConnection,executeQuery
-
-
 
 app = Flask(__name__)
-
 
 # hello world 
 @app.route("/")
@@ -24,17 +18,28 @@ def uploadImage():
     data = request.get_json()
     user_id = data["user_id"]
     set_id = data["set_id"]
+    camera_id = data["camera_id"]
     image_id = getImgFromStr(data["image"])
+    json_data = jsonify({
+        "user_id":user_id,
+        "camera_id":camera_id,
+        "set_id":set_id,
+        "img_id":image_id
+    })
     # do database work
-    query = """select * from images"""
-    executeQuery(query)
     print("database work done")
+    celery.send_task(
+        "insertImage", args =[user_id,camera_id,set_id,image_id]
+    )
     # do yolo work
     celery.send_task(
         "yolowork", args = [image_id]
     )
     print("send yolo task done")
     # do image process work
+    celery.send_task(
+        "imageprocessing", args = [image_id]
+    )
     print("send img process task done")
     return "hi"
 
@@ -42,5 +47,8 @@ def uploadImage():
 
 @app.route("/getConnection")
 def index():
+    celery.send_task(
+        "hello"
+    )
     return "hi"
 

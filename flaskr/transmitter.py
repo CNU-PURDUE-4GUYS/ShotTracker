@@ -3,6 +3,7 @@ import uuid
 import base64
 from io import BytesIO
 import os
+from PIL import Image
 
 
 
@@ -13,11 +14,10 @@ def getImgFromStr(image):
     img = base64.b64decode(img) #Convert image data converted to base64 to original binary data# bytes
     img = BytesIO(img) # _io.Converted to be handled by BytesIO pillow
     img = Image.open(img)
-    img.save(str(uuid.uuid4())+".jpg")
-    img_shape = img.size #Appropriately process the acquired image
-    text = dict_data["name"] + "fuga" #Properly process with the acquired text
+    img_id = str(uuid.uuid4())
+    img.save(img_id+".jpg")
+    # img_shape = img.size #Appropriately process the acquired image
     response = {
-        "img_id":text,
-        "img_shape":img_shape
+        "img_id":img_id,
         }
-    return response
+    return img_id
