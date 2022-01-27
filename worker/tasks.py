@@ -25,10 +25,9 @@ def hello():
 
 @celery.task(name="insertImage")
 def insertImage(user_id,camera_id,set_id,image_id):
-    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    now = '1998-01-23 12:45:56'
+    now = datetime.datetime.now()
     logger.info(f"image id is {image_id}")
-    query = f"insert into images (userid,cameraid,setid,imgid) VALUES ('{user_id}', '{camera_id}', '{set_id}', '{image_id}')"
+    query = f"insert into images (userid,cameraid,setid,imgid,saveddate) VALUES ('{user_id}', '{camera_id}', '{set_id}', '{image_id}','{now}')"
     doInserteQuery(query)
     logger.info("database work done")
     logger.info("hello from celery!!")
