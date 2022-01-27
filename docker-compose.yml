@@ -7,11 +7,7 @@ services:
             dockerfile: Dockerfile
         ports:
             - "5001:5000"
-        links:
-            - db
         restart: always
-        #depends_on:
-        #    - db
     redis:
         image: redis
         ports:
@@ -22,6 +18,8 @@ services:
             dockerfile: Dockerfile
         depends_on:
             - redis
+        links:
+            - db
         command: celery -A tasks worker --loglevel=info
     db:
         container_name: mysql

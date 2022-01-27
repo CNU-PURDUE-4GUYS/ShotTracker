@@ -8,16 +8,14 @@ ENV C_FORCE_ROOT true
 # ENV PYTHONUNBUFFERED 1
 
 
-ADD requirements.txt .
-RUN pip install -r requirements.txt
-
-
 RUN python -m pip install --upgrade pip
 RUN pip install celery[redis]
 # prevent cv2 import error (numpy error)
 RUN apt-get update
 RUN apt-get -y install libgl1-mesa-glx
 
+ADD requirements.txt .
+RUN pip install -r requirements.txt
 
 COPY . /queue
 WORKDIR /queue
