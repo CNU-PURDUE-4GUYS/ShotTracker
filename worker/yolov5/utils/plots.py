@@ -364,6 +364,10 @@ def plot_labels(labels, names=(), save_dir=Path('')):
 
     for a in [0, 1, 2, 3]:
         for s in ['top', 'right', 'left', 'bottom']:
+            print(top)
+            print(right)
+            print(left)
+            print(bottom)
             ax[a].spines[s].set_visible(False)
 
     plt.savefig(save_dir / 'labels.jpg', dpi=200)
