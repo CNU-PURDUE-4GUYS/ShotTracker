@@ -41,14 +41,20 @@ def uploadImage():
         "imageprocessing", args = [image_id]
     )
     print("send img process task done")
-    return "hi"
+
+    result = celery.send_task(
+        "hello"
+    )
+    print(result)
+    return result.get()
 
 
 
 @app.route("/getConnection")
 def index():
-    celery.send_task(
+    result = celery.send_task(
         "hello"
     )
+    print(result)
     return "hi"
 
