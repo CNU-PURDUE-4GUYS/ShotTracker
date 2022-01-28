@@ -8,6 +8,8 @@ services:
         ports:
             - "5001:5000"
         restart: always
+        volumes:
+            - ./images:/app/images
     redis:
         image: redis
         ports:

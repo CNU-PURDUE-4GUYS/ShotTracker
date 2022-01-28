@@ -15,7 +15,7 @@ def getImgFromStr(image):
     img = BytesIO(img) # _io.Converted to be handled by BytesIO pillow
     img = Image.open(img)
     img_id = str(uuid.uuid4())
-    img.save(img_id+".jpg")
+    img.save("./images/"+img_id+".jpg")
     # img_shape = img.size #Appropriately process the acquired image
     response = {
         "img_id":img_id,

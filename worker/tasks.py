@@ -2,6 +2,7 @@ from celery import Celery
 import os
 from dbconnection import getSqlConnection,executeQuery,doInserteQuery
 from celery.utils.log import get_task_logger
+# from yolov5.detect import Detect_class
 import time    
 import datetime
 
@@ -30,13 +31,15 @@ def insertImage(user_id,camera_id,set_id,image_id):
     query = f"insert into images (userid,cameraid,setid,imgid,saveddate) VALUES ('{user_id}', '{camera_id}', '{set_id}', '{image_id}','{now}')"
     doInserteQuery(query)
     logger.info("database work done")
-    logger.info("hello from celery!!")
     return
 
 # do yolo work heres
 @celery.task(name="yolowork")
 def yolowork(img_id):
-    print(img_id)
+    # detect = Detect_class(path)
+    # coordinates = detect.run()
+    # print("yolo")
+    # return timeline
     return
 
 # do image process here
