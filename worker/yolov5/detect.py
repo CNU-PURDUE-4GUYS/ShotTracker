@@ -28,6 +28,7 @@ import argparse
 import os
 import sys
 from pathlib import Path
+import time
 
 import cv2
 import torch
@@ -257,6 +258,10 @@ def main(opt):
     check_requirements(exclude=('tensorboard', 'thop'))
     run(**vars(opt))
 
+class Detect_class(object):
+    def run(self,image_id):
+        time.sleep(3)
+        return (3,4)
 
 if __name__ == "__main__":
     opt = parse_opt()

@@ -33,5 +33,5 @@ CREATE TABLE targets(
 
 
 INSERT INTO images VALUES (NULL,"jisoo","jisooCamera1", 1,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:45:56');
-INSERT INTO bullets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4)
-INSERT INTO targetsVALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4,5,6);
+INSERT INTO bullets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4);
+INSERT INTO targets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4,5,6);
