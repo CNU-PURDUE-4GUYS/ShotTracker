@@ -42,11 +42,7 @@ def uploadImage():
     )
     print("send img process task done")
 
-    result = celery.send_task(
-        "hello"
-    )
-    print(result)
-    return result.get()
+    return "done"
 
 
 
@@ -55,6 +51,5 @@ def index():
     result = celery.send_task(
         "hello"
     )
-    print(result)
-    return "hi"
+    return result.get()
 
