@@ -21,21 +21,28 @@ def hello():
     query = """select * from images"""
     logger.info(executeQuery(query))
     logger.info("database work done")
-    logger.info("hello from celery!!")
     return executeQuery(query)
+
+
+@celery.task(name="getUserHistory")
+def getUserHistory(user_id):
+    query = f"select * from shootingsets where userid = '{user_id}' order by startedtime ASC limit 20"
+    result = executeQuery(query)
+    logger.info("getUserHistorydone")
+    return result
+
 
 @celery.task(name="insertImage")
 def insertImage(user_id,camera_id,set_id,image_id):
     now = datetime.datetime.now()
-    logger.info(f"image id is {image_id}")
     query = f"insert into images (userid,cameraid,setid,imgid,saveddate) VALUES ('{user_id}', '{camera_id}', '{set_id}', '{image_id}','{now}')"
     doInserteQuery(query)
-    logger.info("database work done")
+    logger.info("inserted image info into database")
     return
 
 # do yolo work heres
-@celery.task(name="yolowork")
-def yolowork(img_id):
+@celery.task(name="bulletdetection")
+def bulletdetection(user_id,camera_id,set_id,image_id):
     # detect = Detect_class()
     # coordinates = detect.run(img_id)
     # query = f"insert into bullets (imgid,xposition,yposition) VALUES ('{img_id}', '{coordinates[0]}', '{coordinates[1]}')"
@@ -45,7 +52,7 @@ def yolowork(img_id):
     return
 
 # do image process here
-@celery.task(name="imageprocessing")
-def imageprocessing(img_id):
-    print("image process work")
+@celery.task(name="targetdetection")
+def targetdetection(user_id,camera_id,set_id,image_id):
+    print("targetdetection work")
     return

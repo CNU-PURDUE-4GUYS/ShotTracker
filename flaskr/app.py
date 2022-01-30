@@ -8,8 +8,16 @@ app = Flask(__name__)
 # hello world 
 @app.route("/")
 def hello_world():
-    return "res"
+    return "hello world"
 
+# get recent 20 history of user
+@app.route("/getUserHistory")
+def getUserHistory():
+    user = request.args.get('userid')
+    result = celery.send_task(
+        "getUserHistory" , args = [user]
+    )
+    return result
 
 # get image from json request and save it
 @app.route("/upload",methods=["POST"])
@@ -33,20 +41,18 @@ def uploadImage():
     )
     # do yolo work
     celery.send_task(
-        "yolowork", args = [image_id]
+        "bulletdetection", args = [user_id,camera_id,set_id,image_id]]
     )
     print("send yolo task done")
     # do image process work
     celery.send_task(
-        "imageprocessing", args = [image_id]
+        "targetdetection", args = [user_id,camera_id,set_id,image_id]]
     )
-    print("send img process task done")
-
-    return "done"
+    return "connection ok"
 
 
 
-@app.route("/getConnection")
+@app.route("/showmeyou")
 def index():
     result = celery.send_task(
         "hello"
