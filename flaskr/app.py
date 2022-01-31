@@ -41,12 +41,12 @@ def uploadImage():
     )
     # do yolo work
     celery.send_task(
-        "bulletdetection", args = [user_id,camera_id,set_id,image_id]]
+        "bulletdetection", args = [user_id,camera_id,set_id,image_id]
     )
     print("send yolo task done")
     # do image process work
     celery.send_task(
-        "targetdetection", args = [user_id,camera_id,set_id,image_id]]
+        "targetdetection", args = [user_id,camera_id,set_id,image_id]
     )
     return "connection ok"
 

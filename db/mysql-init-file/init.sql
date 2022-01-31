@@ -7,7 +7,7 @@ use mytest;
 CREATE TABLE shootingsets(
                 id INT AUTO_INCREMENT,
                 userid VARCHAR(36) NOT NULL,
-                setid INT NOT NULL,
+                setid VARCHAR(36) NOT NULL,
                 startedtime datetime NOT NULL,
                 PRIMARY KEY(id)
 );
@@ -16,31 +16,31 @@ CREATE TABLE images(
                 id INT AUTO_INCREMENT,
                 userid VARCHAR(36) NOT NULL,
                 cameraid VARCHAR(36) NOT NULL,
-                setid INT NOT NULL,
+                setid VARCHAR(36) NOT NULL,
                 imgid VARCHAR(36) NOT NULL,
                 saveddate datetime NOT NULL,
                 PRIMARY KEY(id)
                 );
 
 CREATE TABLE bullets(
-            bulletid INT AUTO_INCREMENT,
+            id INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             xposition INT NOT NULL,
             yposition INT NOT NULL,
-            PRIMARY KEY(bulletid)
+            PRIMARY KEY(id)
 );
 
 CREATE TABLE targets(
-            targetid INT AUTO_INCREMENT,
+            id INT AUTO_INCREMENT,
             imgid VARCHAR(36) NOT NULL,
             point1 INT NOT NULL,
             point2 INT NOT NULL,
             point3 INT NOT NULL,
             point4 INT NOT NULL,
-            PRIMARY KEY(targetid)
+            PRIMARY KEY(id)
 );
 
-INSERT INTO shootingsets VALUES (NULL,"jisoo","jisooCamera1", 1,'1998-01-23 12:00:56');
-INSERT INTO images VALUES (NULL,"jisoo","jisooCamera1", 1,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:45:56');
+INSERT INTO shootingsets VALUES (NULL,"jisoo","6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:00:56');
+INSERT INTO images VALUES (NULL,"jisoo","jisooCamera1", "6c553876-51d6-42f9-ae0b-ade36f6e3b5a","6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:45:56');
 INSERT INTO bullets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4);
 INSERT INTO targets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4,5,6);
