@@ -13,11 +13,24 @@ def hello_world():
 # get recent 20 history of user
 @app.route("/getUserHistory")
 def getUserHistory():
-    user = request.args.get('userid')
+    user = request.args.get('userid',default = "",type = str)
     result = celery.send_task(
         "getUserHistory" , args = [user]
     )
     return result
+
+# get recent image of user
+@app.route("/getUserImage")
+def getUserImage():
+    userid = request.args.get('userid',default = "",type = str)
+    setid = request.args.get('setid',default = "",type = str)
+    result = celery.send_task(
+        "getUserImage" , args = [userid,setid]
+    )
+    imgid = result.get()["imgid"]
+    # TODO 파이에 있는 코드 가져다가 쓰기.
+    return result
+
 
 # get image from json request and save it
 @app.route("/upload",methods=["POST"])
@@ -52,10 +65,11 @@ def uploadImage():
 
 
 
+
 @app.route("/showmeyou")
 def index():
     result = celery.send_task(
         "hello"
     )
-    return result.get()
+    return jsonify(result.get())
 

@@ -31,6 +31,13 @@ def getUserHistory(user_id):
     logger.info("getUserHistorydone")
     return result
 
+@celery.task(name="getUserImage")
+def getUserImage(user_id,set_id):
+    query = f"select imgid from images where userid = '{user_id}' and setid = '{set_id}' order by saveddate ASC limit 1"
+    result = executeQuery(query)
+    logger.info("getUserImage done")
+    return result[0]
+
 
 @celery.task(name="insertImage")
 def insertImage(user_id,camera_id,set_id,image_id):
