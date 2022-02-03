@@ -34,7 +34,7 @@ class Detect_class(object):
     @torch.no_grad()
     def run(self, 
             weights='./weights/N_480_32_1000.pt',  # model.pt path(s)
-            source='./images/test.jpg',  # file/dir/URL/glob, 0 for webcam
+            source='../images/front.jpg',  # file/dir/URL/glob, 0 for webcam
             data='./yolov5/coco128.yaml',  # dataset.yaml path
             imgsz=(640, 640),  # inference size (height, width)
             conf_thres=0.25,  # confidence threshold
@@ -51,7 +51,7 @@ class Detect_class(object):
             augment=False,  # augmented inference
             visualize=False,  # visualize features
             update=False,  # update all models
-            project='./results',  # save results to project/name
+            project='../results',  # save results to project/name
             name='exp',  # save results to project/name
             exist_ok=False,  # existing project/name ok, do not increment
             line_thickness=3,  # bounding box thickness (pixels)
