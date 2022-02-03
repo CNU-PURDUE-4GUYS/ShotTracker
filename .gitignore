@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # *.jpg
-*.jpeg
+#*.jpeg
 *.png
 
 /db/Data
