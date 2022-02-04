@@ -71,5 +71,5 @@ def index():
     result = celery.send_task(
         "hello"
     )
-    return jsonify(result.get())
+    return result.get()
 
