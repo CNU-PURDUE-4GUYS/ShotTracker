@@ -14,7 +14,7 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
-ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # relative
+ROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
 
 from models.common import DetectMultiBackend
 from utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
@@ -34,7 +34,7 @@ class Detect_class(object):
     @torch.no_grad()
     def run(self, 
             weights='./weights/N_480_32_1000.pt',  # model.pt path(s)
-            source='../images/front.jpg',  # file/dir/URL/glob, 0 for webcam
+            source='',  # file/dir/URL/glob, 0 for webcam
             data='./yolov5/coco128.yaml',  # dataset.yaml path
             imgsz=(640, 640),  # inference size (height, width)
             conf_thres=0.25,  # confidence threshold
@@ -51,7 +51,7 @@ class Detect_class(object):
             augment=False,  # augmented inference
             visualize=False,  # visualize features
             update=False,  # update all models
-            project='../results',  # save results to project/name
+            project='/queue/results',  # save results to project/name
             name='exp',  # save results to project/name
             exist_ok=False,  # existing project/name ok, do not increment
             line_thickness=3,  # bounding box thickness (pixels)
@@ -60,7 +60,7 @@ class Detect_class(object):
             half=False,  # use FP16 half-precision inference
             dnn=False,  # use OpenCV DNN for ONNX inference
             ):
-        source = str(source)
+        source = str(ROOT)+source+".jpg"
         save_img = not nosave and not source.endswith('.txt')  # save inference images
         is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
         is_url = source.lower().startswith(('rtsp://', 'rtmp://', 'http://', 'https://'))
