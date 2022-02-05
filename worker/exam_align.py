@@ -11,6 +11,8 @@ if __name__=="__main__":
   obj_img = cv2.imread(obj_path, cv2.IMREAD_COLOR)
   
   matrix = alignment.getMatrix(obj_img, ref_img)
+
+  print(matrix)
   
   height, width, channel = ref_img.shape
   warp_img = cv2.warpPerspective(obj_img, matrix, (width, height))

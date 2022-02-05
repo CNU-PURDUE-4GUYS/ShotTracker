@@ -9,16 +9,6 @@ class ImageAlignment(object):
     return self._source
 
   def getMatrix(self, obj_img, ref_img):
-    # Get goal image
-    #goalFilename = src_path
-    #im1 = cv2.imread(src_path, cv2.IMREAD_COLOR)
-    #im1 = cv2.cvtColor(im1, cv2.COLOR_BGR2RGB)
-
-    # Get camera image
-    #camFilename = dst_path
-    #im2 = cv2.imread(dst_path, cv2.IMREAD_COLOR)
-    #im2 = cv2.cvtColor(im2, cv2.COLOR_BGR2RGB)
-
     obj_gray = cv2.cvtColor(obj_img, cv2.COLOR_BGR2GRAY)    # img will be warped 
     ref_gray = cv2.cvtColor(ref_img, cv2.COLOR_BGR2GRAY)    # reference img
 
@@ -46,13 +36,8 @@ class ImageAlignment(object):
     for i, match in enumerate(matches):
       points1[i, :] = k1[match.queryIdx].pt
       points2[i, :] = k2[match.trainIdx].pt
-
+    
+    # Get Matrix using library
     matrix, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
     return matrix
-
-#  def warpImg(self, obj_img, ref_img):
-#    height, width, channels = ref_img.shape
-#    matrix = self.getMatrix(obj_img, ref_img)
-#    warped = cv2.warpPerspective(obj_img, matrix, (width, height))
-#    return warped
 

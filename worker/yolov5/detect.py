@@ -137,6 +137,10 @@ class Detect_class(object):
                 gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
                 imc = im0.copy() if save_crop else im0  # for save_crop
                 annotator = Annotator(im0, line_width=line_thickness, example=str(names))
+                
+                # Detected coordinates list
+                bullets = []
+
                 if len(det):
                     # Rescale boxes from img_size to im0 size
                     det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
@@ -145,12 +149,15 @@ class Detect_class(object):
                     for c in det[:, -1].unique():
                         n = (det[:, -1] == c).sum()  # detections per class
                         s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-                    box_count = 0
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
+                        
+                        # Bullet coordinates
+                        bullet = []
+
                         if save_txt:  # Write to file
                             xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                            print(xywh)
+                            print(('g ' * 5 + '\n') % (cls, *xywh))
                             line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
                             with open(txt_path + '.txt', 'a') as f:
                                 f.write(('%g ' * len(line)).rstrip() % line + '\n')
@@ -159,13 +166,27 @@ class Detect_class(object):
                             c = int(cls)  # integer class
                             #label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
                             label = None if hide_labels else (names[c] if hide_conf else f'')
-                            box_count += 1
-                            print(xyxy)
+                            
+                            # Box coordinates
+                            x = int(xyxy[0].item())
+                            y = int(xyxy[1].item())
+                            w = int(xyxy[2].item())
+                            h = int(xyxy[3].item())
+                            #bullet = [x, y, w, h]
+
+                            # Calculate center of box
+                            xc = x + int((w-x)/2)
+                            yc = y + int((h-y)/2)
+                            bullet = [xc, yc]
+                            
+                            # Insert to list
+                            bullets.append(bullet)
+                            
                             annotator.box_label(xyxy, label, color=colors(c, True))
                             if save_crop:
                                 save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
-                    print(box_count)
+                print(bullets)
 
                 # Print time (inference-only)
                 LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
