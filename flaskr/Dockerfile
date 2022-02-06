@@ -1,7 +1,6 @@
 FROM python:3.9
 
-EXPOSE 5000
-EXPOSE 5001
+EXPOSE 8001
 
 
 ENV CELERY_BROKER_URL redis://redis:6379/0
@@ -26,4 +25,4 @@ RUN pip install -r requirements.txt
 
 
 
-CMD ["flask", "run"]
+CMD ["python","-u","app.py"]

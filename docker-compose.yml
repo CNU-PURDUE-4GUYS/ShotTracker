@@ -6,7 +6,8 @@ services:
             context: ./flaskr
             dockerfile: Dockerfile
         ports:
-            - "5001:5000"
+            - "8001:8001"
+            - "8888:8888"
         restart: always
         volumes:
             - ./images:/app/images
