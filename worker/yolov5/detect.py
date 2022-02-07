@@ -187,6 +187,7 @@ class Detect_class(object):
                                 save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
                 print(bullets)
+                
 
                 # Print time (inference-only)
                 LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
@@ -215,6 +216,7 @@ class Detect_class(object):
                                 save_path += '.mp4'
                             vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                         vid_writer[i].write(im0)
+                return(bullets)
 
         # Print results
         t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
@@ -224,4 +226,4 @@ class Detect_class(object):
             LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
         if update:
             strip_optimizer(weights)  # update model (to fix SourceChangeWarning)
-
+        return(bullets)

@@ -4,6 +4,7 @@ import base64
 from io import BytesIO
 import os
 from PIL import Image
+import json
 
 
 
@@ -21,3 +22,16 @@ def getImgFromStr(image):
         "img_id":img_id,
         }
     return img_id
+
+# send image as json
+def sendImageAsJson(img_id):
+    image = img_id +".jpg"
+    with open(image,"rb") as image_file:
+        image_read = base64.b64encode(image_file.read()).decode("utf-8")
+        body = {
+            "user_id":"jisoo",
+            "camera_id":"camera1",
+            "set_id":"set1",
+            "image":image_read
+            }
+        return json.dumps(event)
