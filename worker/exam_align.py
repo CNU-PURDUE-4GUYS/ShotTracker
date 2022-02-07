@@ -1,4 +1,5 @@
 from alignment.align_matrix import ImageAlignment
+from yolov5.detect import Detect_class
 import cv2
 
 if __name__=="__main__":
@@ -17,13 +18,16 @@ if __name__=="__main__":
   height, width, channel = ref_img.shape
   warp_img = cv2.warpPerspective(obj_img, matrix, (width, height))
 
-  outFilePath = "../results/aligned.jpg"
-  cv2.imwrite(outFilePath, warp_img)
+  outFilePath = "/../../results/aligned"
+  cv2.imwrite(outFilePath+'.jpg', warp_img)
 
-  cv2.imshow("Reference", ref_img)
-  cv2.imshow("Object", obj_img)
-  cv2.imshow("Warped Image", warp_img)
+  detect = Detect_class(None)
+  detect.run(source=outFilePath)
+
+  # cv2.imshow("Reference", ref_img)
+  # cv2.imshow("Object", obj_img)
+  # cv2.imshow("Warped Image", warp_img)
   
-  cv2.waitKey()
-  cv2.destroyAllWindows()
+  # cv2.waitKey()
+  # cv2.destroyAllWindows()
 
