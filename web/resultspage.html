@@ -1,0 +1,28 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="shottracker.css">	
+	</head>
+	<body>
+		<div class="container">
+			<div class="site-header">
+				<div class="hamburger-menu">
+					<span onclick="menuToggle()" class="material-icons md-light hamburger-menu-icon">menu</span>
+					<div id="myDropdown" class="dropdown-menu">
+						<a href="setpage.html">New Set</a>
+						<a href="historypage.html">History</a>
+						<a href="loginpage.html">Log Out</a>
+					</div>
+				</div>
+			</div>
+			<div class="body-content">
+				Number of shots: 9<br>Grouping size: 2 Inches
+				<button class="cool-button" onclick="location.href='activesetpage.html'" type="button">New Set</button>
+                <button class="cool-button" onclick="location.href='setpage.html'" type="button">Main Menu</button>
+			</div>
+			<div class="site-footer"></div>
+		</div>
+	</body>
+
+	<script type="text/javascript" src="shottracker.js"></script>
+
+</html>
