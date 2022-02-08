@@ -14,7 +14,8 @@ FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # add ROOT to PATH
-ROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
+ROOT = os.environ.get("WARP_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
+PROJECT = os.environ.get("DETECT_IMAGE_DIRECTORY", "./results") # relative
 
 from models.common import DetectMultiBackend
 from utils.datasets import IMG_FORMATS, VID_FORMATS, LoadImages, LoadStreams
@@ -51,7 +52,7 @@ class Detect_class(object):
             augment=False,  # augmented inference
             visualize=False,  # visualize features
             update=False,  # update all models
-            project='/queue/results',  # save results to project/name
+            project='/queue/detects',  # save results to project/name
             name='exp',  # save results to project/name
             exist_ok=False,  # existing project/name ok, do not increment
             line_thickness=3,  # bounding box thickness (pixels)
