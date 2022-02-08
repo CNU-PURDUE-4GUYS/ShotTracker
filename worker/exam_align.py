@@ -1,4 +1,5 @@
 from alignment.align_matrix import ImageAlignment
+from yolov5.detect import Detect_class
 import cv2
 def align(ref,obj):
   refROOT = os.environ.get("REFER_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
@@ -16,6 +17,7 @@ def align(ref,obj):
 
   height, width, channel = ref_img.shape
   warp_img = cv2.warpPerspective(obj_img, matrix, (width, height))
+
 
   outFilePath = os.environ.get("WARP_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) )+"/" +obj+".jpg"
 

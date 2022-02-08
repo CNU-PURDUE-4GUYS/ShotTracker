@@ -1,0 +1,233 @@
+/*Importing fonts*/
+@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+.material-icons.md-light{ 
+	color: rgba(255, 255, 255, 1); 
+}
+
+.material-icons-round.md-light{ 
+	color: rgba(255, 255, 255, 1); 
+}
+
+/*Base-level styling*/
+:root{
+	--header-height: 70px;
+	--footer-height: 40px;
+}
+
+
+html, body {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+	text-decoration: none;
+}
+
+.container{
+	box-sizing: border-box;
+	position: relative;
+	padding-bottom: var(--footer-height);
+	min-height: 100%;
+	background-image: url("resources/purple.png");
+	background-position: center top;
+	background-size: cover;
+	background-attachment: fixed;
+}
+
+.body-content {
+	/*position: relative;*/
+	z-index: 1;
+}
+
+/*Website table stuff*/
+
+.website-table {
+	margin-left: auto; 
+	margin-right: auto;
+	border-left: 1px solid gray;
+	border-bottom: 1px solid gray;
+	border-spacing: 0px;
+}
+
+.website-table-item {
+	text-align: center;
+	padding: 5px;
+	vertical-align: center;
+	border-top: 1px solid gray;
+	border-right: 1px solid gray;
+}
+
+
+/*Header Styling*/
+.site-header {
+	margin: 0;
+	position: sticky;
+	top: 0;
+	padding: 5px 0 5px 0;
+	justify-content: right;
+	display: flex;
+	z-index: 2;
+	background: black;
+}
+
+.logo {
+	margin-right: calc(50% - 105px);
+	height: 60px;
+	width: auto;
+	position: relative;
+}
+
+.logo img {
+	height: 60px;
+	width: auto;
+}
+
+.hamburger-menu {
+	height: 60px;
+	width: 60px;
+	position: relative;
+	float: right;
+	margin-right: 15px;
+	line-height: 48px;
+	text-align: center
+}
+
+.hamburger-menu-icon {
+	position: absolute;
+	transition: 0.3s;	
+	text-align: right;
+	font-size: 40 !important;
+	cursor: pointer;
+	right: 1px;
+	margin-top: 10px
+}
+
+.dropdown-menu {
+	display: none;
+	position: absolute;
+	padding: 0 40px 0 40px;
+	right: 0;
+	background-color: #22222288;
+	margin-top:60px;
+	right: -15px
+}
+
+.dropdown-menu a {
+	text-align: center;
+	white-space: nowrap;
+	color: white;
+	display: block;
+	font-family: Oswald;
+	font-size: 20px;
+}
+
+.show {
+	display: block;
+}
+
+/* .body-header { */
+	/* height: 70px; */
+	/* width: 100%; */
+	/* margin: 0; */
+	/* position: sticky; */
+	/* top: 0px; */
+	/* justify-content: center; */
+	/* display: flex; */
+	/* background-color: purple; */
+/* } */
+
+.body-header{
+	height: var(--header-height);
+	width: 100%;
+	background: transparent;
+}
+
+/*Home Page Stuff*/
+.title-div {
+	margin: 0;
+	height: 100%;
+	width: 100%;
+	background-color: transparent;
+	text-align: center;
+	position: relative;
+	z-index: 10;
+}
+
+.title-div div {
+	margin: calc(50vh - 84px) auto 0 auto;
+	color: white;
+	font-size: 48px;
+	font-family: Oswald;
+	display: inline-block;
+	vertical-align: middle;
+	line-height: 100%;
+}
+
+.title-icon {
+	width: 32px;
+	height: 32px;
+	line-height: 32px !important;
+	position: absolute;
+	bottom: 90px;
+	left: calc(50% - 16px);
+	transition: 0.3s;
+	vertical-align: middle;
+	display: inline-block;
+}
+
+.title-icon:hover{
+	font-size: 32px;
+	background-color: rgba(0,0,0,0.3);
+	border-radius: 500px;
+	cursor: pointer;
+}
+
+.title-page-content-wrapper{
+	padding: 0 75px 0 75px;
+	background-color: lightgray;
+	box-shadow: 0px -10px 20px -15px rgba(0,0,0,0.3);
+}
+
+.title-page-content{
+	padding: 30px;
+	background-color: ghostwhite;
+	margin-bottom: 500px
+}
+
+/*Footer Styling*/
+.site-footer {
+	position: absolute;
+	bottom: 0;
+	/* right: 20px; */
+	height: var(--footer-height);
+	/* width: calc(100% - 40px); */
+	width: 100%;
+	background-color: #222222;
+	color: ghostwhite;
+	font-family: Oswald;
+	text-align: center;
+}
+
+
+/*Shottracker new things*/
+.login-button {
+	background-color: whitesmoke;
+	color: black;
+}
+.cool-button {
+	background-color: whitesmoke;
+	color: black;
+	border-radius: 16px;
+	margin: auto;
+	padding: 10px;
+	width: 300px;
+	align-items: center;
+}
