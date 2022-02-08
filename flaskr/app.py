@@ -73,11 +73,23 @@ async def pihandler(websocket,pi_id,user_id):
                 )
                 await websocket.send("hihihihi")
             
-            elif command == "showmeyou":
+            elif command == "detectthis":
                 result = celery.send_task(
                     "hello"
                 )
                 await websocket.send(result.get())
+            elif command == "showmeyou":
+                # result = celery.send_task(
+                #     "bulletdetection",args = [event["img_id"]]
+                # )
+                # await websocket.send("detectThisDone")
+                result = celery.send_task(
+                    "hello"
+                )
+                await websocket.send(result.get())
+            else:
+                await websocket.send("wrong command here")
+            
 
     finally:
         del CONNECTEDPI[pi_id]
@@ -90,9 +102,9 @@ async def handler(websocket):
     event = json.loads(message)
     assert event["type"] == "init"
     if "user_id" in event:
-        await userhandler(websocket,user_id)
+        await userhandler(websocket,event["user_id"])
     elif "pi_id" in event:
-        await pihandler(websocket,pi_id,user_id)
+        await pihandler(websocket,event["pi_id"],event["user_id"])
     else:
         await hellohandler(websocket)
     
