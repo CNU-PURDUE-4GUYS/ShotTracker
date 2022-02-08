@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import os
+import cv2
 
 class ImageAlignment(object):
   def __init__(self, source):
@@ -40,4 +42,26 @@ class ImageAlignment(object):
     # Get Matrix using library
     matrix, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
     return matrix
+  def align(self,ref,obj):
+    refROOT = os.environ.get("REFER_IMAGE_DIRECTORY", "../../refs/" ) 
+    resROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", "../../images/") 
+
+    ref_path = refROOT+ref+".jpg"
+    obj_path = resROOT+obj+".jpg"
+    print("ref_path is ",ref_path)
+    alignment = ImageAlignment(1)
+  
+    ref_img = cv2.imread(ref_path, cv2.IMREAD_COLOR)
+    obj_img = cv2.imread(obj_path, cv2.IMREAD_COLOR)
+  
+    matrix = alignment.getMatrix(obj_img, ref_img)
+
+    height, width, channel = ref_img.shape
+    warp_img = cv2.warpPerspective(obj_img, matrix, (width, height))
+
+    outFilePath = os.environ.get("WARP_IMAGE_DIRECTORY", "../../warps/") +obj+".jpg"
+
+    cv2.imwrite(outFilePath, warp_img)
+    return matrix
+
 

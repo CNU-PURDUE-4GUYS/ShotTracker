@@ -1,10 +1,12 @@
 from alignment.align_matrix import ImageAlignment
 from yolov5.detect import Detect_class
 import cv2
+def align(ref,obj):
+  refROOT = os.environ.get("REFER_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
+  resROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
 
-if __name__=="__main__":
-  ref_path = "../images/target.png"
-  obj_path = "../images/target_test1.jpg"
+  ref_path = refROOT+"/"+ref+".jpg"
+  obj_path = resROOT+"/"+obj+".jpg"
 
   alignment = ImageAlignment(1)
   
@@ -13,21 +15,16 @@ if __name__=="__main__":
   
   matrix = alignment.getMatrix(obj_img, ref_img)
 
-  print(matrix)
-  
   height, width, channel = ref_img.shape
   warp_img = cv2.warpPerspective(obj_img, matrix, (width, height))
 
-  outFilePath = "/../../results/aligned"
-  cv2.imwrite(outFilePath+'.jpg', warp_img)
 
-  detect = Detect_class(None)
-  detect.run(source=outFilePath)
+  outFilePath = os.environ.get("WARP_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) )+"/" +obj+".jpg"
 
-  # cv2.imshow("Reference", ref_img)
-  # cv2.imshow("Object", obj_img)
-  # cv2.imshow("Warped Image", warp_img)
-  
-  # cv2.waitKey()
-  # cv2.destroyAllWindows()
+  cv2.imwrite(outFilePath, warp_img)
+  return matrix
+
+if __name__=="__main__":
+  align()
+
 

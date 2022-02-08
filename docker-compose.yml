@@ -26,7 +26,9 @@ services:
         command: celery -A tasks worker --loglevel=info
         volumes:
             - ./images:/queue/images
-            - ./results:/queue/results
+            - ./detects:/queue/detects
+            - ./refs:/queue/refs
+            - ./warps:/queue/warps
     db:
         container_name: mysql
         image: mysql/mysql-server:latest

@@ -5,6 +5,7 @@ from celery.utils.log import get_task_logger
 from yolov5.detect import Detect_class
 import time    
 import datetime
+from alignment.align_matrix import ImageAlignment
 
 
 CELERY_BROKER_URL = (os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379"),)
@@ -49,9 +50,13 @@ def insertImage(user_id,camera_id,set_id,image_id):
 # do yolo work heres
 @celery.task(name="bulletdetection")
 def bulletdetection(image_id):
+    refer_id = "ref"
+    alignment = ImageAlignment(1)
+    alignment.align(refer_id,image_id)
+    print("align done")
     detect = Detect_class(1)
     detect.run(source=image_id)
-    return
+    print("detect done")
 
 # do image process here
 @celery.task(name="targetdetection")
