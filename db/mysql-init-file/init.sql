@@ -39,10 +39,15 @@ CREATE TABLE targets(
             point4 INT NOT NULL,
             PRIMARY KEY(id)
 );
-
+CREATE TABLE refers(
+    setid VARCHAR(36),
+    userid VARCHAR(36) NOT NULL,
+    refid VARCHAR(36) NOT NULL,
+    PRIMARY KEY(setid)
+);
 
 INSERT INTO shootingsets VALUES (NULL,"jisoo","6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:00:56');
 INSERT INTO images VALUES (NULL,"jisoo","jisooCamera1", "6c553876-51d6-42f9-ae0b-ade36f6e3b5a","6c553876-51d6-42f9-ae0b-ade36f6e3b5a",'1998-01-23 12:45:56');
 INSERT INTO bullets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4);
-INSERT INTO targets VALUES (NULL,"6c553876-51d6-42f9-ae0b-ade36f6e3b5a",3,4,5,6);
+INSERT INTO refers VALUES ("jisoo","jisoo","jisoo");
 

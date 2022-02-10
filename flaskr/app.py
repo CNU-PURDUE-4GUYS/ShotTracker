@@ -1,15 +1,16 @@
 import json
 from transmitter import *
 from myworker import celery
-
+from logicmodule import findnewbullets
 import asyncio
+import uuid
 
 import websockets
 
 
 CONNECTEDUSER = {}
 CONNECTEDPI = {}
-
+CURRENTSET = {}
 
 async def hellohandler(websocket):
     async for message in websocket:
@@ -34,7 +35,7 @@ async def userhandler(websocket,user_id):
                     "getUserHistory" , args = [user_id]
                 )
                 await websocket.send(result.get())
-            
+
             elif command == "getUserImage":
                 set_id = event["set_id"]
                 result = celery.send_task(
@@ -42,53 +43,86 @@ async def userhandler(websocket,user_id):
                 )
                 imgid = result.get()["imgid"]
                 await websocket.send(sendImageAsJson(imgid))
+
+            elif command == "getRefImage":
+                ref_id = getImgFromStr(event["image"])
+            
+            # receive "newSet request from clinet"
+            elif command == "newSetFromCli":
+                set_id = str(uuid.uuid4())
+                CURRENTSET[user_id] = set_id
+                await CONNECTEDPI[user_id].send(
+                    newSetMessage(user_id,set_id)
+                )
+                await websocket.send(newSetMessage(user_id,set_id))
+            
+            elif command == "takeRef":
+                await CONNECTEDPI[user_id].send(
+                    takeRefMessage(user_id,event["set_id"])
+                )
+            elif command == "takePhoto":
+                await CONNECTEDPI[user_id].send(
+                    takePhotoMessage(user_id,event["set_id"])
+                )
     finally:
         del CONNECTEDUSER[user_id]
 
 
 async def pihandler(websocket,pi_id,user_id):
-    CONNECTEDPI[pi_id] = websocket
+    CONNECTEDPI[user_id] = websocket
     try:
         async for message in websocket:
             event = json.loads(message)
             command = event["command"]
 
-            if command == "post_image":
-                set_id = event["set_id"]
-                camera_id = event["camera_id"]
-                image_id = getImgFromStr(event["image"])
-                print("database work done")
-                
-                celery.send_task(
-                    "insertImage", args =[user_id,camera_id,set_id,image_id]
-                )
-        # do yolo work
-                celery.send_task(
-                    "bulletdetection", args = [user_id,camera_id,set_id,image_id]
-                )
-                print("send yolo task done")
-        # do image process work
-                celery.send_task(
-                    "targetdetection", args = [user_id,camera_id,set_id,image_id]
-                )
-                await websocket.send("hihihihi")
+
             
-            elif command == "showmeyou":
+            if command == "newSetFromPI":
+                set_id = event["set_id"]
                 result = celery.send_task(
-                    "hello"
-                )
-                await websocket.send(result.get())
-            elif command == "detectthis":
+                    "newSetInit",args = [user_id,set_id]
+                ).get()
+                CURRENTSET[user_id] = set_id
+                # 새로운 세트 시작
+            elif command == "refer":
+                set_id = event["set_id"]
+
+                ref_id = getRefFromStr(event["image"])
                 result = celery.send_task(
-                    "bulletdetection",args = [event["img_id"]]
+                    "postRef",args = [user_id,set_id,ref_id]
+                ).get()
+
+                await CONNECTEDUSER[user_id].send(
+                    sendReferAsJson(ref_id,user_id,set_id)
                 )
-                await websocket.send("detectThisDone")
+            elif command == "photo":
+                set_id = event["set_id"]
+
+                img_id = getImgFromStr(event["image"])
+                          
+                ref_id = celery.send_task(
+                    "getReferImage",args = [set_id]
+                ).get()["refid"]
+                print("ref_id is",ref_id)
+                bullets = celery.send_task(
+                    "bulletdetection", args = [img_id,ref_id]
+                ).get()
+
+                celery.send_task(
+                    "insertImage", args =[user_id,pi_id,set_id,img_id]
+                )
+                for bullet in bullets:
+                    pass
+                
+                await CONNECTEDUSER[user_id].send(
+                    sendWarpAsJson(img_id,user_id,set_id)
+                )
             else:
                 await websocket.send("wrong command here")
             
 
     finally:
-        del CONNECTEDPI[pi_id]
+        del CONNECTEDPI[user_id]
 
 
 
@@ -96,7 +130,7 @@ async def pihandler(websocket,pi_id,user_id):
 async def handler(websocket):
     message = await websocket.recv()
     event = json.loads(message)
-    assert event["type"] == "init"
+    assert event["command"] == "init"
     if "user_id" in event and "pi_id" not in event:
         await userhandler(websocket,event["user_id"])
     elif "pi_id" in event:

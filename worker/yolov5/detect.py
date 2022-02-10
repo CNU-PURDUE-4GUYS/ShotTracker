@@ -34,7 +34,7 @@ class Detect_class(object):
     # Default Option Settings
     @torch.no_grad()
     def run(self, 
-            weights='./weights/N_480_32_1000.pt',  # model.pt path(s)
+            weights='./weights/M_320_16_500.pt',  # model.pt path(s)
             source='',  # file/dir/URL/glob, 0 for webcam
             data='./yolov5/coco128.yaml',  # dataset.yaml path
             imgsz=(640, 640),  # inference size (height, width)
@@ -187,7 +187,7 @@ class Detect_class(object):
                             if save_crop:
                                 save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
-                print(bullets)
+                #print(bullets)
                 
 
                 # Print time (inference-only)

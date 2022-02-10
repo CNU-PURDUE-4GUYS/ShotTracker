@@ -43,8 +43,8 @@ class ImageAlignment(object):
     matrix, mask = cv2.findHomography(points1, points2, cv2.RANSAC)
     return matrix
   def align(self,ref,obj):
-    refROOT = os.environ.get("REFER_IMAGE_DIRECTORY", "../../refs/" ) 
-    resROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", "../../images/") 
+    refROOT = str(os.environ.get("REFER_IMAGE_DIRECTORY", "../../refs/" )) 
+    resROOT = str(os.environ.get("SOURCE_IMAGE_DIRECTORY", "../../images/") )
 
     ref_path = refROOT+ref+".jpg"
     obj_path = resROOT+obj+".jpg"
