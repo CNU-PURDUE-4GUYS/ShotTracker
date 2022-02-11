@@ -121,7 +121,9 @@ async def pihandler(websocket,pi_id,user_id):
                             "insertBullet",args = [img_id,bullet[0],bullet[1],0]
                         )
                 await CONNECTEDUSER[user_id].send(
-                    sendWarpAsJson(img_id,user_id,set_id)
+                    sendWarpAsJson(img_id,user_id,set_id,celery.send_task(
+                        "getBullets",args = [img_id]
+                    ).get())
                 )
             else:
                 await websocket.send("wrong command here")

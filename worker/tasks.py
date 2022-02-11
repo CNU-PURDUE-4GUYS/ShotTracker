@@ -103,6 +103,7 @@ def postRef(user_id,set_id,ref_id="ref"):
     doInserteQuery(query)
     logger.info("insert to refers!")
 
+
 @celery.task(name="newSetInit")
 def newSetInit(user_id,set_id):
     now = datetime.datetime.now()

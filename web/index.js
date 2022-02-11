@@ -1,6 +1,6 @@
 var user_id = "jisoo"
 var set_id = ""
-
+var imageObj = new Image();
 
 
 
@@ -12,8 +12,6 @@ function clientInit(mybutton, websocket) {
          };
          websocket.send(JSON.stringify(event));
     })
-
-
     }
 
 
@@ -59,8 +57,9 @@ function listenToWebSocket(websocket){
                 console.log("new set id detected"+set_id)
                 break;
             case "refer":
+
                 document.getElementById("img").src ="data:image/jpg;base64, "+ event.image
-                console.log(event.image)
+                imageObj.src = "data:image/jpg;base64, "+ event.image
             case "warp":
                 document.getElementById("img").src ="data:image/jpg;base64, "+ event.image
             default:
@@ -71,7 +70,14 @@ function listenToWebSocket(websocket){
 
 
 window.addEventListener("DOMContentLoaded", () => {
+    var c = document.getElementById("myCanvas");
+    var context = c.getContext("2d");
+
+    imageObj.onload = function() { 
+        context.drawImage(imageObj, 0,0);  
+      }
     console.log("before web")
+    
      // Open the WebSocket connection and register event handlers.
     const websocket = new WebSocket("ws://localhost:8888/");
     listenToWebSocket(websocket)
