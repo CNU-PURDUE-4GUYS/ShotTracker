@@ -32,7 +32,7 @@ def getRefFromStr(image):
     return img_id
 # send image as json
 
-def sendWarpAsJson(img_id,user_id = "jisoo",set_id="1"):
+def sendWarpAsJson(img_id,user_id = "jisoo",set_id="1",bullets=None):
     image = "/app/warps/"+img_id +".jpg"
     with open(image,"rb") as image_file:
         image_read = base64.b64encode(image_file.read()).decode("utf-8")
@@ -40,7 +40,8 @@ def sendWarpAsJson(img_id,user_id = "jisoo",set_id="1"):
             "command":"warp",
             "user_id":user_id,
             "set_id":set_id,
-            "image":image_read
+            "image":image_read,
+            "bullets":bullets
             }
         return json.dumps(body)
 

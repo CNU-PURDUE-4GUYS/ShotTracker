@@ -51,6 +51,9 @@ async def userhandler(websocket,user_id):
             elif command == "newSetFromCli":
                 set_id = str(uuid.uuid4())
                 CURRENTSET[user_id] = set_id
+                result = celery.send_task(
+                    "newSetInit",args = [user_id,set_id]
+                ).get()
                 await CONNECTEDPI[user_id].send(
                     newSetMessage(user_id,set_id)
                 )
@@ -77,14 +80,8 @@ async def pihandler(websocket,pi_id,user_id):
 
 
             
-            if command == "newSetFromPI":
-                set_id = event["set_id"]
-                result = celery.send_task(
-                    "newSetInit",args = [user_id,set_id]
-                ).get()
-                CURRENTSET[user_id] = set_id
-                # 새로운 세트 시작
-            elif command == "refer":
+
+            if command == "refer":
                 set_id = event["set_id"]
 
                 ref_id = getRefFromStr(event["image"])
@@ -103,7 +100,9 @@ async def pihandler(websocket,pi_id,user_id):
                 ref_id = celery.send_task(
                     "getReferImage",args = [set_id]
                 ).get()["refid"]
-                print("ref_id is",ref_id)
+                formerbullets = celery.send_task(
+                    "getformerBullets", args = [user_id,set_id]
+                ).get()
                 bullets = celery.send_task(
                     "bulletdetection", args = [img_id,ref_id]
                 ).get()
@@ -112,8 +111,15 @@ async def pihandler(websocket,pi_id,user_id):
                     "insertImage", args =[user_id,pi_id,set_id,img_id]
                 )
                 for bullet in bullets:
-                    pass
-                
+                    new = findnewbullets(bullet,formerbullets,threshold=3)
+                    if new:
+                        celery.send_task(
+                            "insertBullet",args = [img_id,bullet[0],bullet[1],1]
+                        )
+                    else:
+                        celery.send_task(
+                            "insertBullet",args = [img_id,bullet[0],bullet[1],0]
+                        )
                 await CONNECTEDUSER[user_id].send(
                     sendWarpAsJson(img_id,user_id,set_id)
                 )

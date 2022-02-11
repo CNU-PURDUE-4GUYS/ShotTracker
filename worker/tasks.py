@@ -53,6 +53,13 @@ def insertImage(user_id,camera_id,set_id,image_id):
     logger.info("inserted image info into database")
     return
 
+@celery.task(name="insertBullet")
+def insertBullet(imgid,x,y,isnew):
+    query = f"insert into bullets (imgid,xposition,yposition,isnew) VALUES ('{imgid}', '{x}', '{y}','{isnew}')"
+    doInserteQuery(query)
+    logger.info("inserted bullet info into database")
+    return
+
 # do yolo work heres
 @celery.task(name="bulletdetection")
 def bulletdetection(image_id,refer_id = "ref"):
@@ -65,19 +72,41 @@ def bulletdetection(image_id,refer_id = "ref"):
     bullets = detect.run(source=image_id)
     return bullets
 
+# do yolo work heres
+@celery.task(name="getformerBullets")
+def getformerBullets(user_id,set_id ):
+    previousimageidquery = f"select * from images where setid = '{set_id}' order by saveddate ASC limit 1"
 
+    result = executeQuery(previousimageidquery)
+    print("getformer image id",result)
+    if (not result):
+        return []
+    
+    previousImageId = result[0]["imgid"]
+    query = f"select * from bullets where imgid = '{previousImageId}'"
+    result = executeQuery(query)
+    logger.info("get former bullets done")
+    return result
 
-
+# do yolo work heres
+@celery.task(name="getBullets")
+def getBullets(img_id):
+    query = f"select * from bullets where imgid = '{img_id}'"
+    result = executeQuery(query)
+    logger.info("get former bullets done")
+    return result
 
 # save ref to database
 @celery.task(name="postRef")
 def postRef(user_id,set_id,ref_id="ref"):
-    query = f"insert into refers (userid,setid,refid) VALUES ('{user_id}', '{set_id}', '{ref_id}')"
+    query = f"insert into refers (userid,setid,refid) VALUES ('{user_id}', '{set_id}', '{ref_id}') ON DUPLICATE KEY UPDATE refid='{ref_id}'"
     doInserteQuery(query)
     logger.info("insert to refers!")
 
-# TODO
 @celery.task(name="newSetInit")
-def newSetInit():
-    pass
+def newSetInit(user_id,set_id):
+    now = datetime.datetime.now()
+    query = f"insert into shootingsets (userid,setid,startedtime) VALUES ('{user_id}', '{set_id}', '{now}')"
+    doInserteQuery(query)
+    logger.info("new set inserted!")
 
