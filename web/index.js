@@ -1,9 +1,39 @@
+const circleRadius = 20
 var user_id = "jisoo"
 var set_id = ""
 var imageObj = new Image();
+var c = document.getElementById("myCanvas");
+var context = c.getContext("2d");
+var canvas = new fabric.Canvas('myCanvas');
 
+function drawBullets(image,canvas){
+    canvas.clear();
+    var imgInstance = new fabric.Image(image, {
+      });
+    canvas.add(imgInstance);
+    if (image.bullets){
+        for (var i = 0; i < image.bullets.length; i++) {
+            console.log(image.bullets[i]);
+            var bullet = image.bullets[i];
+            var circlePatrol = new fabric.Circle({
+                top: toDrawPoint(bullet.yposition),
+                left: toDrawPoint(bullet.xposition),
+                radius: circleRadius,
+                stroke: "#33FF33",
+                strokeWidth: circleRadius/5,
+                fill: 'rgba(0,0,0,0)'
+              });
+            canvas.add(circlePatrol);
 
+        }       
+    }
 
+    console.log(image.width,image.height)
+}
+
+function toDrawPoint(point){
+    return point-circleRadius
+}
 function clientInit(mybutton, websocket) {
     mybutton.addEventListener("click",({target})=>{
         const event = {
@@ -57,11 +87,13 @@ function listenToWebSocket(websocket){
                 console.log("new set id detected"+set_id)
                 break;
             case "refer":
-
-                document.getElementById("img").src ="data:image/jpg;base64, "+ event.image
                 imageObj.src = "data:image/jpg;base64, "+ event.image
+                break;
             case "warp":
-                document.getElementById("img").src ="data:image/jpg;base64, "+ event.image
+                imageObj.src = "data:image/jpg;base64, "+ event.image
+                imageObj.bullets = event.bullets
+                console.log(event)
+                break;
             default:
                 console.log(event)
         }
@@ -70,11 +102,10 @@ function listenToWebSocket(websocket){
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    var c = document.getElementById("myCanvas");
-    var context = c.getContext("2d");
+
 
     imageObj.onload = function() { 
-        context.drawImage(imageObj, 0,0);  
+        drawBullets(this,canvas)
       }
     console.log("before web")
     

@@ -28,7 +28,7 @@ class ImageAlignment(object):
     # Eliminate features by distance
     matches.sort(key=lambda x: x.distance, reverse=False)
 
-    numGoodMatches = int(len(matches) * 0.15)        # if image quality is bad, control this number
+    numGoodMatches = int(len(matches) * 0.2)        # if image quality is bad, control this number
     matches = matches[:numGoodMatches]
 
     # Calculate warping matrix
