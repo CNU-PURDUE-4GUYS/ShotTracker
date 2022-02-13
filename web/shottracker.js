@@ -17,3 +17,22 @@ window.onclick = function(event) {
     }
   }
 } 
+
+//Selector for your <video> element
+const video = document.querySelector('#myVidPlayer');
+
+//Core
+//function loadCamera() {
+window.navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+        video.onloadedmetadata = (e) => {
+            video.play();
+        };
+    })
+  //}
+//Scroll the page when user clicks arrow icon
+// function titleScroll(){
+// 	document.getElementById("bodyHeader").scrollIntoView({alignToTop: true, behavior: "smooth"});
+// 	console.log("scroll");
+// }

@@ -14,6 +14,8 @@
 :root{
 	--header-height: 70px;
 	--footer-height: 40px;
+	--center-width: 70%;
+	--center-height: 70%;
 }
 
 
@@ -31,6 +33,26 @@ a {
 	text-decoration: none;
 }
 
+form {
+	width: 100%;
+	display: table;
+	margin: 10px auto;
+}
+
+input {
+	width: 30%;
+	min-width: 300px;
+	padding: 12px 20px;
+	margin: 8px 0;
+	display: inline-block;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+	align-self: center;
+	border-radius: 10px;
+	font-size: 16;
+	text-align: center;
+}
+
 .container{
 	box-sizing: border-box;
 	position: relative;
@@ -40,11 +62,18 @@ a {
 	background-position: center top;
 	background-size: cover;
 	background-attachment: fixed;
+	width: 100%;
+	align-items: center;
 }
 
 .body-content {
-	/*position: relative;*/
-	z-index: 1;
+	position: absolute;
+	width: var(--center-width);
+	height: var(--center-height);
+	top: 15%;
+	left: 15%;
+	align-items: center;
+	margin: auto;
 }
 
 /*Website table stuff*/
@@ -219,15 +248,75 @@ a {
 
 /*Shottracker new things*/
 .login-button {
-	background-color: whitesmoke;
-	color: black;
+	background-color: #04AA6D;
+  	color: white;
+	border-radius: 16px;
+	align-items: center;
+	text-align: center;
+	font-size: 20;
+	padding: 14px 20px;
+	margin: 5px auto;
+	border: none;
+	cursor: pointer;
+	width: 300px;
 }
 .cool-button {
-	background-color: whitesmoke;
-	color: black;
+	background-color: #04AA6D;
+  	color: white;
 	border-radius: 16px;
-	margin: auto;
-	padding: 10px;
-	width: 300px;
 	align-items: center;
+	text-align: center;
+	font-size: 20;
+	padding: 14px 20px;
+	margin: 5px auto;
+	border: none;
+	cursor: pointer;
+	width: 300px;
+}
+
+.accountcontainer {
+	width: 100%;
+	background-color: transparent;
+	text-align: center;
+	z-index: 10;
+}
+
+.content-container {
+	width: 100%;
+	background-color: transparent;
+	text-align: center;
+	z-index: 10;
+}
+
+.acctlabel {
+	font-family: Arial, Helvetica, sans-serif;
+	font-weight: bold;
+	color: whitesmoke;
+	font-size: 30;
+}
+
+.img-box {
+	width: 300px;
+	height: 300px;
+	margin: 5px auto;
+	margin-bottom: 100px;
+}
+
+.logo-image {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.live-feed {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.camera-box {
+	width: 500px;
+	height: 300px;
+	margin: 5px auto;
+	margin-bottom: 100px;
 }
