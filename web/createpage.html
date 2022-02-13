@@ -5,16 +5,18 @@
 	<body>
 		<div class="container">
 			<div class="body-content">
-				<form>
-					<label for="email">Email Address:</label><br>
-					<input type="text" id="email" name="email"><br>
-					<label for="fname">Username:</label><br>
-					<input type="text" id="fname" name="fname"><br>
-					<label for="lname">Password:</label><br>
-					<input type="text" id="lname" name="lname">
-				</form> 
-				<button class="login-button" onclick="location.href='setpage.html'" type="button">Confirm Creation</button>
-				<button class="login-button" onclick="location.href='loginpage.html'" type="button">Log in With Existing Account</button>
+				<div class="accountcontainer">
+					<form>
+						<label for="email" class="acctlabel">Email Address:</label><br>
+						<input type="text" id="email" name="email"><br>
+						<label for="fname" class="acctlabel">Username:</label><br>
+						<input type="text" id="fname" name="fname"><br>
+						<label for="lname" class="acctlabel">Password:</label><br>
+						<input type="text" id="lname" name="lname">
+					</form> 
+					<div class="login-button" onclick="location.href='setpage.html'" type="button">Confirm Creation</div><br>
+					<div class="login-button" onclick="location.href='loginpage.html'" type="button">Log in With Existing Account</div>
+				</div>
 			</div>
 			<div class="site-footer"></div>
 		</div>
