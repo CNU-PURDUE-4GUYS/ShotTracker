@@ -115,11 +115,11 @@ async def pihandler(websocket,pi_id,user_id):
                     if new:
                         celery.send_task(
                             "insertBullet",args = [img_id,bullet[0],bullet[1],1]
-                        )
+                        ).get()
                     else:
                         celery.send_task(
                             "insertBullet",args = [img_id,bullet[0],bullet[1],0]
-                        )
+                        ).get()
                 await CONNECTEDUSER[user_id].send(
                     sendWarpAsJson(img_id,user_id,set_id,celery.send_task(
                         "getBullets",args = [img_id]
