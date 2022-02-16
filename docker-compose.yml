@@ -11,6 +11,10 @@ services:
         restart: always
         volumes:
             - ./images:/app/images
+            - ./refs:/app/refs
+            - ./detects:/app/detects      
+            - ./warps:/app/warps         
+   
     redis:
         image: redis
         ports:
