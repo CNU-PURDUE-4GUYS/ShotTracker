@@ -1,13 +1,69 @@
-const circleRadius = 20
-const textsize = 15
+var circleRadius = 20
+var textsize = 15
 var user_id = "jisoo"
 var set_id = ""
 var imageObj = new Image();
-var c = document.getElementById("myCanvas");
-var context = c.getContext("2d");
+var referObj = new Image();
+const defaultwidth = 640
+const defaultheight = 480
+// var c = document.getElementById("myCanvas");
+// var referCanvas = document.getElementById("myReferCanvas");
+// var context = c.getContext("2d");
+// var referContext = referCanvas.getContext("2d");
 var canvas = new fabric.Canvas('myCanvas');
+canvas.setWidth(defaultwidth);
+canvas.setHeight(defaultheight);
+var referCanvas = new fabric.Canvas('myReferCanvas');
+referCanvas.setWidth(defaultwidth);
+referCanvas.setHeight(defaultheight);
 
-function drawBullets(image,canvas){
+
+function setuserid(){
+    user_id = document.getElementById("fname").value
+}
+
+function toLoginPage(){
+    document.getElementById("loginpage").style.display = "block"
+    document.getElementById("newsetpage").style.display = "none"
+    document.getElementById("referencepage").style.display = "none"
+    document.getElementById("detectpage").style.display = "none"
+    document.getElementById("historypage").style.display = "none"
+}
+
+function toNewSetPage(){
+    
+    document.getElementById("loginpage").style.display = "none"
+    document.getElementById("newsetpage").style.display = "block"
+    document.getElementById("referencepage").style.display = "none"
+    document.getElementById("detectpage").style.display = "none"
+    document.getElementById("historypage").style.display = "none"
+}
+
+function toReferencePage(){
+    referCanvas.clear()
+    document.getElementById("loginpage").style.display = "none"
+    document.getElementById("newsetpage").style.display = "none"
+    document.getElementById("referencepage").style.display = "block"
+    document.getElementById("detectpage").style.display = "none"
+    document.getElementById("historypage").style.display = "none"
+}
+function toDetectPage(){
+    canvas.clear()
+    document.getElementById("loginpage").style.display = "none"
+    document.getElementById("newsetpage").style.display = "none"
+    document.getElementById("referencepage").style.display = "none"
+    document.getElementById("detectpage").style.display = "block"
+    document.getElementById("historypage").style.display = "none"}
+function toHistoryPage(){
+    document.getElementById("loginpage").style.display = "none"
+    document.getElementById("newsetpage").style.display = "none"
+    document.getElementById("referencepage").style.display = "none"
+    document.getElementById("detectpage").style.display = "none"
+    document.getElementById("historypage").style.display = "block"}
+
+
+
+function drawImage(image,canvas){
 
     canvas.clear();
     canvas.setWidth(image.width);
@@ -16,6 +72,10 @@ function drawBullets(image,canvas){
       });
     imgInstance.set('selectable', false);
     canvas.add(imgInstance);
+}
+
+function drawBullets(image,canvas){
+
     if (image.bullets){
         for (var i = 0; i < image.bullets.length; i++) {
             console.log(image.bullets[i]);
@@ -90,25 +150,40 @@ function toDrawPoint(point){
     return point-circleRadius
 }
 
-function clientInit(mybutton, websocket) {
+function clientInit(mybutton,websocket) {
+    
     mybutton.addEventListener("click",({target})=>{
+        setuserid()
         const event = {
             command: "init",
             user_id: user_id,
          };
          websocket.send(JSON.stringify(event));
+         alert("hello "+ user_id)
+         toNewSetPage()
     })
+    
+    // const event = {
+    //     command: "init",
+    //     user_id: user_id,
+    //  };
+    //  websocket.send(JSON.stringify(event));
     }
 
 
 function newSet(mybutton, websocket) {
+
+
+
     mybutton.addEventListener("click",({target})=>{
         const event = {
             command: "newSetFromCli",
             user_id: user_id,
             };
         websocket.send(JSON.stringify(event));
+        toReferencePage()
     })
+    
 
 }
 
@@ -122,6 +197,25 @@ function takeRef(mybutton, websocket) {
         websocket.send(JSON.stringify(event));
     })
 
+}
+
+
+function toDetectPageButton(mybutton){
+    mybutton.addEventListener("click",({target})=>{
+        toDetectPage()
+    })
+}
+
+function toHistoryPageButton(mybutton){
+    mybutton.addEventListener("click",({target})=>{
+        toHistoryPage()
+    })
+}
+
+function toSetPageButton(mybutton){
+    mybutton.addEventListener("click",({target})=>{
+        toNewSetPage()
+    })
 }
 function takePhoto(mybutton, websocket) {
     mybutton.addEventListener("click",({target})=>{
@@ -143,7 +237,7 @@ function listenToWebSocket(websocket){
                 console.log("new set id detected"+set_id)
                 break;
             case "refer":
-                imageObj.src = "data:image/jpg;base64, "+ event.image
+                referObj.src = "data:image/jpg;base64, "+ event.image
                 break;
             case "warp":
                 imageObj.bullets = event.bullets
@@ -162,6 +256,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     imageObj.onload = function() { 
+        drawImage(this,canvas)
         drawBullets(this,canvas)
         drawPaths(this,canvas)
         if(typeof this.bullets !== "undefined"){
@@ -169,14 +264,25 @@ window.addEventListener("DOMContentLoaded", () => {
         }
         
       }
+
+
+    referObj.onload = function() { 
+        drawImage(this,referCanvas)
+
+        
+      }
     console.log("before web")
     
      // Open the WebSocket connection and register event handlers.
     const websocket = new WebSocket("ws://localhost:8888/");
     listenToWebSocket(websocket)
-    clientInit(document.querySelector(".init"),websocket)
+    clientInit(document.querySelector(".login-button"),websocket)
     newSet(document.querySelector(".newset"),websocket)
     takeRef(document.querySelector(".refer"),websocket)
+    toDetectPageButton(document.querySelector(".todetectbutton"))
     takePhoto(document.querySelector(".photo"),websocket)
+    toHistoryPageButton(document.querySelector(".tohistorypage"))
+    toSetPageButton(document.querySelector(".tosetpage"))
     console.log("after web")
+    
     });

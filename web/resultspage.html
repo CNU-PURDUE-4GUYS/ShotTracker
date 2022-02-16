@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="shottracker.css">	
+		<meta charset="UTF-8">
 	</head>
 	<body>
 		<div class="container">
@@ -15,14 +16,25 @@
 				</div>
 			</div>
 			<div class="body-content">
-				Number of shots: 9<br>Grouping size: 2 Inches
-				<button class="cool-button" onclick="location.href='activesetpage.html'" type="button">New Set</button>
-                <button class="cool-button" onclick="location.href='setpage.html'" type="button">Main Menu</button>
+				<div class="content-container">
+					Number of shots: 9<br>Grouping size: 2 Inches
+					<button class = "init"  type="button">이닛</button>
+				<button class = "newset" type="button">새로운 세트 시작</button>
+                <button class = "refer" type="button">레퍼런스 찍기</button>
+                <button class = "photo" type="button">사진찍기</button>
+					<div class="target-canvas">
+						<canvas id="myCanvas"></canvas>
+					</div>
+					<div class="cool-button" onclick="location.href='activesetpage.html'" type="button">New Set</div>
+					<div class="cool-button" onclick="location.href='setpage.html'" type="button">Main Menu</div>
+				</div>
 			</div>
 			<div class="site-footer"></div>
 		</div>
 	</body>
 
 	<script type="text/javascript" src="shottracker.js"></script>
+	<script src="fabric.min.js"></script>
+    <script src="index.js" type="module"></script>
 
 </html>
