@@ -5,6 +5,13 @@ window.addEventListener("DOMContentLoaded", () => {
     var set_id = ""
     var imageObj = new Image();
     var referObj = new Image();
+    var pointcount = 0
+    var temppoint;
+    var defaultMeasure = 1
+    var calculatedPixel = 1
+    function myRatio(){
+        return defaultMeasure/calculatedPixel
+    }
     const defaultwidth = 640
     const defaultheight = 480
     // var c = document.getElementById("myCanvas");
@@ -83,11 +90,13 @@ window.addEventListener("DOMContentLoaded", () => {
                 var bullet = image.bullets[i];
                 var stroke = "#33FF33"
                 if (bullet.isnew){
-                    stroke = "#FEFF3E"
+                    stroke = "red"
                 }
                 var circlePatrol = new fabric.Circle({
-                    top: toDrawPoint(bullet.yposition),
-                    left: toDrawPoint(bullet.xposition),
+                    originX: "center",
+                    originY: "center",
+                    top: bullet.yposition,
+                    left: bullet.xposition,
                     radius: circleRadius,
                     stroke: stroke,
                     strokeWidth: 2,
@@ -110,8 +119,8 @@ window.addEventListener("DOMContentLoaded", () => {
                 for(var j = 0; j<image.bullets.length;j++){
                     var bullet1 = image.bullets[i];
                     var bullet2 = image.bullets[j];
-                    var len = Math.ceil(((bullet1.xposition-bullet2.xposition)**2+
-                    (bullet1.yposition-bullet2.yposition)**2)**0.5)
+                    var len = (myRatio()*((bullet1.xposition-bullet2.xposition)**2+
+                    (bullet1.yposition-bullet2.yposition)**2)**0.5).toFixed(2)
                     if (len>max){
                         max = len
                         mainbullet1 = bullet1
@@ -122,10 +131,10 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (typeof mainbullet2 !== 'undefined' && max!= 0){
                     var stroke = "#33FF33"
                     if (mainbullet1.isnew || mainbullet2.isnew){
-                        stroke = "#FEFF3E"
+                        stroke = 'red'
                     }
                     var line = new fabric.Line([mainbullet1.xposition, mainbullet1.yposition, mainbullet2.xposition, mainbullet2.yposition], {
-                        stroke: 'red'
+                        stroke: "#FEFF3E"
                     });
                     line.set('selectable', false);
                     canvas.add(line);
@@ -147,9 +156,7 @@ window.addEventListener("DOMContentLoaded", () => {
     
     
     
-    function toDrawPoint(point){
-        return point-circleRadius
-    }
+
     
     function clientInit(mybutton,websocket) {
         
@@ -203,6 +210,7 @@ window.addEventListener("DOMContentLoaded", () => {
     
     function toDetectPageButton(mybutton){
         mybutton.addEventListener("click",({target})=>{
+            defaultMeasure = document.getElementById("referdistance").value
             toDetectPage()
         })
     }
@@ -267,7 +275,33 @@ window.addEventListener("DOMContentLoaded", () => {
 
     referObj.onload = function() { 
         drawImage(this,referCanvas)
+        referCanvas.on("mouse:down", function(event) {
+            var pointer = referCanvas.getPointer(event.e);
+            var positionX = pointer.x;
+            var positionY = pointer.y;
+            // Add small circle as an indicative point
+            var circlePoint = new fabric.Circle({
+                radius: 4,
+                fill: "blue",
+                left: positionX ,
+                top: positionY,
+                selectable: false,
+                originX: "center",
+                originY: "center",
+                hoverCursor: "auto"
+            });
+            referCanvas.add(circlePoint);
+            
+            if(pointcount == 0){
+                temppoint = [positionX,positionY]
+                pointcount = 1
+            }else if (pointcount == 1){
+                calculatedPixel = (((positionX-temppoint[0])**2+
+                    (positionY-temppoint[1])**2)**0.5)
+                pointcount = 0
+            }
 
+        })
         
       }
     console.log("before web")
