@@ -2,23 +2,93 @@
 	<head>
 		<!-- <link rel="stylesheet" href="shottracker.css">	 -->
         <meta charset="UTF-8">
-        </script>
+		<link rel="stylesheet" href="shottracker.css">	
 	</head>
 	<body>
-		<div class="container">
-			<div class="body-content">
-                simple websocket conatiner.
-                <button class = "init"  type="button">이닛</button>
-				<button class = "newset" type="button">새로운 세트 시작</button>
-                <button class = "refer" type="button">레퍼런스 찍기</button>
-
-                <button class = "photo" type="button">사진찍기</button>
-
-				<canvas id="myCanvas"></canvas>
+		<div class="site-header">
+			<div class="hamburger-menu">
+				<span onclick="menuToggle()" class="material-icons md-light hamburger-menu-icon">menu</span>
+				<div id="myDropdown" class="dropdown-menu">
+					<!-- <a href="setpage.html">New Set</a>
+					<a href="historypage.html">History</a>
+					<a href="loginpage.html">Log Out</a> -->
+					<a onclick = "location.reload()">Logout</a>
+				</div>
 			</div>
-			<div class="site-footer"></div>
 		</div>
+		<div id = "loginpage">
+			<div class="container">
+				<div class="body-content">
+					<div class="accountcontainer">
+						<form>
+							<label for="fname" class="acctlabel">Username:</label><br>
+							<input type="text" id="fname" name="fname"><br>
+						</form> 
+						<div class="login-button" type="button">Log In</div><br>
+					</div>
+				</div>
+				<div class="site-footer"></div>
+			</div>
+
+
+		</div>
+
+		<div id = "newsetpage" style="display: none">
+			<div class="container">
+	
+				<div class="body-content">
+					<div class="content-container">
+						<div class="img-box">
+							<img class="logo-image"src="resources/targetlogo.png"/>
+						</div>
+						<div class = "cool-button newset" type="button">New Set</div>
+					</div>
+				</div>
+				<div class="site-footer"></div>
+			</div></div>
+		
+
+
+
+
+		<div id = "referencepage" style="display: none;">
+
+			<div class="body-content">
+				<div class="content-container">
+					<canvas id="myReferCanvas" ></canvas>
+					<div class="cool-button refer" type="button">capture refernce</div><br>
+					<div class="cool-button todetectbutton" type="button">done</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id = "detectpage" style="display:none">
+
+			<div class="body-content">
+				<canvas id="myCanvas"></canvas>
+                <div class = "cool-button photo" type="button">Shot</div>
+				<div class = "cool-button tohistorypage" type="button">End set</div>
+
+			</div>
+
+	</div>
+
+
+
+	<div id = "historypage" style="display:none">
+		<div class="container">
+			<div id="like_button_container"></div>
+			<div class = "cool-button tosetpage" type="button">Retry?</div>
+		</div>
+	</div>
+
+
+		<script src="react.production.min.js" crossorigin></script>
+		<script src="react-dom.production.min.js" crossorigin></script>
+
 		<script src="fabric.min.js"></script>
+		<script src="shottracker.js"></script>
         <script src="index.js" type="module"></script>
     </body>
 </html>

@@ -34,10 +34,10 @@ class Detect_class(object):
     # Default Option Settings
     @torch.no_grad()
     def run(self, 
-            weights='./weights/M_320_16_500.pt',  # model.pt path(s)
+            weights='./weights/n_640_32_600.pt',  # model.pt path(s)
             source='',  # file/dir/URL/glob, 0 for webcam
             data='./yolov5/coco128.yaml',  # dataset.yaml path
-            imgsz=(640, 640),  # inference size (height, width)
+            imgsz=(640, 640),  # inference sine (height, width)
             conf_thres=0.25,  # confidence threshold
             iou_thres=0.45,  # NMS IOU threshold
             max_det=1000,  # maximum detections per image
