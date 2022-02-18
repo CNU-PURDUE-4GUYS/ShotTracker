@@ -1,4 +1,5 @@
 window.addEventListener("DOMContentLoaded", () => {
+    // variables
     var circleRadius = 20
     var textsize = 15
     var user_id = "jisoo"
@@ -14,22 +15,20 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     const defaultwidth = 640
     const defaultheight = 480
-    // var c = document.getElementById("myCanvas");
-    // var referCanvas = document.getElementById("myReferCanvas");
-    // var context = c.getContext("2d");
-    // var referContext = referCanvas.getContext("2d");
+    // make canvas for displaying bullet images
     var canvas = new fabric.Canvas('myCanvas');
     canvas.setWidth(defaultwidth);
     canvas.setHeight(defaultheight);
+    // make canvas for displaying refer images
     var referCanvas = new fabric.Canvas('myReferCanvas');
     referCanvas.setWidth(defaultwidth);
     referCanvas.setHeight(defaultheight);
     
-    
+    // set user id
     function setuserid(){
         user_id = document.getElementById("fname").value
     }
-    
+    // loginpage mode
     function toLoginPage(){
         document.getElementById("loginpage").style.display = "block"
         document.getElementById("newsetpage").style.display = "none"
@@ -37,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("detectpage").style.display = "none"
         document.getElementById("historypage").style.display = "none"
     }
-    
+    // newsetpage mode
     function toNewSetPage(){
         
         document.getElementById("loginpage").style.display = "none"
@@ -46,7 +45,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("detectpage").style.display = "none"
         document.getElementById("historypage").style.display = "none"
     }
-    
+    // refernecepage mode
     function toReferencePage(){
         referCanvas.clear()
         document.getElementById("loginpage").style.display = "none"
@@ -55,6 +54,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("detectpage").style.display = "none"
         document.getElementById("historypage").style.display = "none"
     }
+    // detection page mode
     function toDetectPage(){
         canvas.clear()
         document.getElementById("loginpage").style.display = "none"
@@ -62,6 +62,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("referencepage").style.display = "none"
         document.getElementById("detectpage").style.display = "block"
         document.getElementById("historypage").style.display = "none"}
+    // history page mode
     function toHistoryPage(){
         document.getElementById("loginpage").style.display = "none"
         document.getElementById("newsetpage").style.display = "none"
@@ -70,7 +71,7 @@ window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("historypage").style.display = "block"}
     
     
-    
+    // draw image on canvas
     function drawImage(image,canvas){
     
         canvas.clear();
@@ -81,7 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
         imgInstance.set('selectable', false);
         canvas.add(imgInstance);
     }
-    
+    // draw bullet traces on canvas
     function drawBullets(image,canvas){
     
         if (image.bullets){
@@ -109,7 +110,8 @@ window.addEventListener("DOMContentLoaded", () => {
     
     }
     
-    
+    // draw paths between image's bullet traces with their lenght
+    // draw the longest path for each bullet
     function drawPaths(image,canvas){
         if (image.bullets){
             for (var i = 0; i < image.bullets.length; i++) {
@@ -156,7 +158,7 @@ window.addEventListener("DOMContentLoaded", () => {
     
     
     
-
+    // send init message to server
     
     function clientInit(mybutton,websocket) {
         
@@ -171,14 +173,10 @@ window.addEventListener("DOMContentLoaded", () => {
              toNewSetPage()
         })
         
-        // const event = {
-        //     command: "init",
-        //     user_id: user_id,
-        //  };
-        //  websocket.send(JSON.stringify(event));
+
         }
     
-    
+    // send new set message to server
     function newSet(mybutton, websocket) {
     
     
@@ -194,7 +192,7 @@ window.addEventListener("DOMContentLoaded", () => {
         
     
     }
-    
+    // send takeRef message to server
     function takeRef(mybutton, websocket) {
         mybutton.addEventListener("click",({target})=>{
             const event = {
@@ -207,25 +205,26 @@ window.addEventListener("DOMContentLoaded", () => {
     
     }
     
-    
+    // go to detect page
     function toDetectPageButton(mybutton){
         mybutton.addEventListener("click",({target})=>{
             defaultMeasure = document.getElementById("referdistance").value
             toDetectPage()
         })
     }
-    
+    // go to history page
     function toHistoryPageButton(mybutton){
         mybutton.addEventListener("click",({target})=>{
             toHistoryPage()
         })
     }
-    
+    // go to set page
     function toSetPageButton(mybutton){
         mybutton.addEventListener("click",({target})=>{
             toNewSetPage()
         })
     }
+    // send takephoto message
     function takePhoto(mybutton, websocket) {
         mybutton.addEventListener("click",({target})=>{
             const event = {
@@ -237,18 +236,24 @@ window.addEventListener("DOMContentLoaded", () => {
         })
     
     }
+
+    //listen to websocket server
     function listenToWebSocket(websocket){
         websocket.addEventListener("message",({data})=>{
             const event = JSON.parse(data);
             switch(event.command){
+                
                 case "newSet":
+                    // new set inited. set set_id 
                     set_id = event.set_id;
                     console.log("new set id detected"+set_id)
                     break;
                 case "refer":
+                    // get reference image. add it to page
                     referObj.src = "data:image/jpg;base64, "+ event.image
                     break;
                 case "warp":
+                    // get warped image. add it to page
                     imageObj.bullets = event.bullets
                     imageObj.src = "data:image/jpg;base64, "+ event.image
                     
@@ -263,8 +268,11 @@ window.addEventListener("DOMContentLoaded", () => {
     
 
     imageObj.onload = function() { 
+        // when image loads, update that to canvas
         drawImage(this,canvas)
+        // and draw bullets
         drawBullets(this,canvas)
+        // and draw paths
         drawPaths(this,canvas)
         if(typeof this.bullets !== "undefined"){
             console.log(this.bullets.length)
@@ -274,7 +282,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
 
     referObj.onload = function() { 
+        // when refer image loads, update that to canvas
         drawImage(this,referCanvas)
+        // let user mark points for measuring.
         referCanvas.on("mouse:down", function(event) {
             var pointer = referCanvas.getPointer(event.e);
             var positionX = pointer.x;
@@ -308,7 +318,9 @@ window.addEventListener("DOMContentLoaded", () => {
     
      // Open the WebSocket connection and register event handlers.
     const websocket = new WebSocket("ws://localhost:8888/");
+    // listen to websocket
     listenToWebSocket(websocket)
+    // make buttons functionable
     clientInit(document.querySelector(".login-button"),websocket)
     newSet(document.querySelector(".newset"),websocket)
     takeRef(document.querySelector(".refer"),websocket)
@@ -318,28 +330,28 @@ window.addEventListener("DOMContentLoaded", () => {
     toSetPageButton(document.querySelector(".tosetpage"))
     console.log("after web")
     
+// One day... lets do react and display results & history.
+// const e = React.createElement;
 
-const e = React.createElement;
+// class LikeButton extends React.Component {
+//   constructor(props) {
+//     super(props);
+//     this.state = { liked: false };
+//   }
 
-class LikeButton extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { liked: false };
-  }
+//   render() {
+//     if (this.state.liked) {
+//       return 'You liked this.';
+//     }
 
-  render() {
-    if (this.state.liked) {
-      return 'You liked this.';
-    }
+//     return e(
+//       'button',
+//       { onClick: () => this.setState({ liked: true }) },
+//       'Like'
+//     );
+//   }
+// }
 
-    return e(
-      'button',
-      { onClick: () => this.setState({ liked: true }) },
-      'Like'
-    );
-  }
-}
-
-const domContainer = document.querySelector('#like_button_container');
-ReactDOM.render(e(LikeButton), domContainer);
+// const domContainer = document.querySelector('#like_button_container');
+// ReactDOM.render(e(LikeButton), domContainer);
     });

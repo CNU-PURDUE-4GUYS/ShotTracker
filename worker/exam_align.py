@@ -1,6 +1,9 @@
 from alignment.align_matrix import ImageAlignment
 from yolov5.detect import Detect_class
 import cv2
+
+# dummy file for debugging.
+# get two images, and find matrix describing relationship
 def align(ref,obj):
   refROOT = os.environ.get("REFER_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative
   resROOT = os.environ.get("SOURCE_IMAGE_DIRECTORY", Path(os.path.relpath(ROOT, Path.cwd())) ) # relative

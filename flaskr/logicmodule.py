@@ -1,3 +1,5 @@
+# it marks if bullet is newone. get formerbullets, and compare, 
+# then if the bullet is very close(smaller than threshold), consider it as already checked.
 def findnewbullets(onebullet,formerbulletdicts,threshold):
     for formerbullet in formerbulletdicts:
         result = (

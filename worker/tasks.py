@@ -16,35 +16,35 @@ celery = Celery("tasks", broker=CELERY_BROKER_URL, backend=CELERY_RESULT_BACKEND
 
 logger = get_task_logger(__name__)
 
-
+# for debugging. 
 @celery.task(name="hello")
 def hello():
     detect = Detect_class(1)
     detect.run(source='front')
     return "hello"
 
-
+# get user's history
 @celery.task(name="getUserHistory")
 def getUserHistory(user_id):
     query = f"select * from shootingsets where userid = '{user_id}' order by startedtime ASC limit 20"
     result = executeQuery(query)
     logger.info("getUserHistorydone")
     return result
-
+# get user's image
 @celery.task(name="getUserImage")
 def getUserImage(user_id,set_id):
     query = f"select imgid from images where userid = '{user_id}' and setid = '{set_id}' order by saveddate ASC limit 1"
     result = executeQuery(query)
     logger.info("getUserImage done")
     return result[0]
-
+# insert referImage to DB
 @celery.task(name="getReferImage")
 def getReferImage(set_id):
     query = f"select refid from refers where setid = '{set_id}'"
     result = executeQuery(query)
     logger.info("getReferImagedone")
     return result[0]
-
+# insert Image to DB
 @celery.task(name="insertImage")
 def insertImage(user_id,camera_id,set_id,image_id):
     now = datetime.datetime.now()
@@ -52,7 +52,7 @@ def insertImage(user_id,camera_id,set_id,image_id):
     doInserteQuery(query)
     logger.info("inserted image info into database")
     return
-
+# insert bullet to DB
 @celery.task(name="insertBullet")
 def insertBullet(imgid,x,y,isnew):
     query = f"insert into bullets (imgid,xposition,yposition,isnew) VALUES ('{imgid}', '{x}', '{y}','{isnew}')"
@@ -60,7 +60,7 @@ def insertBullet(imgid,x,y,isnew):
     logger.info("inserted bullet info into database")
     return
 
-# do yolo work heres
+# Detects bullets with YOLO
 @celery.task(name="bulletdetection")
 def bulletdetection(image_id,refer_id = "ref"):
     # align first
@@ -72,7 +72,7 @@ def bulletdetection(image_id,refer_id = "ref"):
     bullets = detect.run(source=image_id)
     return bullets
 
-# do yolo work heres
+# get formerBullets from db
 @celery.task(name="getformerBullets")
 def getformerBullets(user_id,set_id ):
     previousimageidquery = f"select * from images where setid = '{set_id}' order by saveddate ASC limit 1"
@@ -88,7 +88,7 @@ def getformerBullets(user_id,set_id ):
     logger.info("get former bullets done")
     return result
 
-# do yolo work heres
+# get bullets from DB
 @celery.task(name="getBullets")
 def getBullets(img_id):
     query = f"select * from bullets where imgid = '{img_id}'"
@@ -96,14 +96,14 @@ def getBullets(img_id):
     logger.info("get former bullets done")
     return result
 
-# save ref to database
+# save ref to database. if ref already exists, update
 @celery.task(name="postRef")
 def postRef(user_id,set_id,ref_id="ref"):
     query = f"insert into refers (userid,setid,refid) VALUES ('{user_id}', '{set_id}', '{ref_id}') ON DUPLICATE KEY UPDATE refid='{ref_id}'"
     doInserteQuery(query)
     logger.info("insert to refers!")
 
-
+# new set init , save it woth user_id and startedtime
 @celery.task(name="newSetInit")
 def newSetInit(user_id,set_id):
     now = datetime.datetime.now()

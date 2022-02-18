@@ -5,7 +5,7 @@ from io import BytesIO
 import os
 from PIL import Image
 import json
-
+# This is module for making JSON Message.
 
 
 # receive and save image from JSON Request
@@ -30,7 +30,8 @@ def getRefFromStr(image):
     img.save("/app/refs/"+img_id+".jpg")
     # img_shape = img.size #Appropriately process the acquired image
     return img_id
-# send image as json
+
+# find warped image in warps folder and make json message
 
 def sendWarpAsJson(img_id,user_id = "jisoo",set_id="1",bullets=None):
     image = "/app/warps/"+img_id +".jpg"
@@ -45,6 +46,7 @@ def sendWarpAsJson(img_id,user_id = "jisoo",set_id="1",bullets=None):
             }
         return json.dumps(body)
 
+# find image in images folder and make json message
 
 def sendImageAsJson(img_id,user_id = "jisoo",set_id="1"):
     image = "/app/images/"+img_id +".jpg"
@@ -57,6 +59,8 @@ def sendImageAsJson(img_id,user_id = "jisoo",set_id="1"):
             "image":image_read
             }
         return json.dumps(body)
+
+# find refer in ref folder and make json message
 def sendReferAsJson(img_id,user_id = "jisoo",set_id="1"):
     image = "/app/refs/"+img_id +".jpg"
     with open(image,"rb") as image_file:
@@ -68,7 +72,7 @@ def sendReferAsJson(img_id,user_id = "jisoo",set_id="1"):
             "image":image_read
             }
         return json.dumps(body)
-# newSetMessageToPi
+# newSetMessageToPi&Client
 def newSetMessage(user_id,set_id):
     body = {
         "command":"newSet",
@@ -77,7 +81,7 @@ def newSetMessage(user_id,set_id):
         }
     return json.dumps(body)
 
-# newSetMessageToPi
+# refer message to raspberry pi "takeRefer"
 def takeRefMessage(user_id,set_id):
     body = {
         "command":"takeRef",
@@ -86,7 +90,7 @@ def takeRefMessage(user_id,set_id):
         }
     return json.dumps(body)
 
-# newSetMessageToPi
+# photo message to raspberry pi "takePhoto"
 def takePhotoMessage(user_id,set_id):
     body = {
         "command":"takePhoto",

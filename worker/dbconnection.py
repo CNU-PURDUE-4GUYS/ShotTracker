@@ -1,4 +1,5 @@
 import mysql.connector
+# make sqlConnection and return it
 def getSqlConnection():
     config = {
         "user": "root",
@@ -11,7 +12,7 @@ def getSqlConnection():
     connection = mysql.connector.connect(**config)
     return connection
 
-
+# execute "GET" queries. return it as "ARRAY"
 def executeQuery(query):
     DB = getSqlConnection()
     cursor = DB.cursor()
@@ -26,7 +27,7 @@ def executeQuery(query):
     cursor.close()
     # return list of dic
     return json_data
-
+# execute "Insert". it "commits"
 def doInserteQuery(query):
     DB = getSqlConnection()
     cursor = DB.cursor()

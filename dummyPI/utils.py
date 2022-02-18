@@ -3,7 +3,7 @@ import base64
 import json
 import uuid
 
-
+# find image with "img_id",and convert into string, then return json dumped message.
 def image_json(user_id,pi_id,set_id,img_id = "image"):
     image = img_id+".jpg"
     with open(image,"rb") as image_file:
@@ -13,6 +13,7 @@ def image_json(user_id,pi_id,set_id,img_id = "image"):
         "command":"photo","user_id":user_id,"pi_id":pi_id,"set_id":set_id,"image":image_read}
         return json.dumps(body)
     
+# find refer image with "img_id" ,and convert into string, then return json dumped message.
 
 def refer_json(user_id,pi_id,set_id,img_id = "refer"):
     image = img_id+".jpg"

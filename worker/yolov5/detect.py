@@ -1,5 +1,6 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
-
+# it detects "bullet traces" from image.
+# and return coordinates of bullets.
 import argparse
 import os
 import sys
