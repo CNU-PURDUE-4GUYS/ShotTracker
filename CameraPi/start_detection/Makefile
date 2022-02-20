@@ -5,13 +5,13 @@ CC=g++
 CFLAGS=-c -Wall
 LIBS=-lwiringPi
 
-all: dragino_lora_app
+all: lora
 
-dragino_lora_app: main.o
-	$(CC) main.o  $(LIBS) -o dragino_lora_app
+lora: main.o
+	$(CC) main.o  $(LIBS) -o lora
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c
 
 clean:
-	rm *.o dragino_lora_app	
+	rm *.o lora

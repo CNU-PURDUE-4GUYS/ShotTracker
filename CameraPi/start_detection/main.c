@@ -15,7 +15,7 @@
 #include <sys/time.h>
 #include <signal.h>
 #include <stdlib.h>
-
+#include <stdint.h>
 #include <sys/ioctl.h>
 
 #include <wiringPi.h>
@@ -429,6 +429,45 @@ void txlora(byte *frame, byte datalen) {
     printf("send: %s\n", frame);
 }
 
+static char encoding_table[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                                'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                                'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                                'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f',
+                                'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                                'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
+                                'w', 'x', 'y', 'z', '0', '1', '2', '3',
+                                '4', '5', '6', '7', '8', '9', '+', '/'};
+static int mod_table[] = {0, 2, 1};
+ 
+char *base64_encode(const unsigned char *data,
+                    size_t input_length,
+                    size_t *output_length) {
+ 
+    *output_length = 4 * ((input_length + 2) / 3);
+ 
+    char *encoded_data = (char *)malloc((size_t) output_length);
+    if (encoded_data == NULL) return NULL;
+ 
+    for (int i = 0, j = 0; i < input_length;) {
+ 
+        uint32_t octet_a = i < input_length ? (unsigned char)data[i++] : 0;
+        uint32_t octet_b = i < input_length ? (unsigned char)data[i++] : 0;
+        uint32_t octet_c = i < input_length ? (unsigned char)data[i++] : 0;
+ 
+        uint32_t triple = (octet_a << 0x10) + (octet_b << 0x08) + octet_c;
+ 
+        encoded_data[j++] = encoding_table[(triple >> 3 * 6) & 0x3F];
+        encoded_data[j++] = encoding_table[(triple >> 2 * 6) & 0x3F];
+        encoded_data[j++] = encoding_table[(triple >> 1 * 6) & 0x3F];
+        encoded_data[j++] = encoding_table[(triple >> 0 * 6) & 0x3F];
+    }
+ 
+    for (int i = 0; i < mod_table[input_length % 3]; i++)
+        encoded_data[*output_length - 1 - i] = '=';
+ 
+    return encoded_data;
+}
+
 int main (int argc, char *argv[]) {
 
 /*    if (argc < 2) {
@@ -445,6 +484,7 @@ int main (int argc, char *argv[]) {
 
     wiringPiSPISetup(CHANNEL, 500000);
 
+setTargetNumber:	//	GOTO !!!!
     SetupLoRa();
 
 
@@ -464,7 +504,10 @@ int main (int argc, char *argv[]) {
 	  //if(isdigit(rbuff)){
 	  //if(rbuff != NULL)	  
 	  if(strcmp(rbuff, "")){
+		//	parse b1 to 1.
+
 		printf("Target No. %s\n", rbuff);
+		delay(1500);
 		break;
 	  }
 	}
@@ -481,9 +524,11 @@ int main (int argc, char *argv[]) {
         printf("------------------\n");
 
         for(int i=0; i<10; ++i) {
-            txlora(ACK, strlen((char *)ACK));
+            //txlora(ACK, strlen((char *)ACK));
+            txlora(ACK, 3);
             delay(50);
         }	
+	fflush(stdout);
 
 
         // radio init
@@ -503,18 +548,173 @@ int main (int argc, char *argv[]) {
 		  if(!strcmp(rbuff, "sig_capture")){	//	if sig_capture
 			printf("Start detection\n");
 			fflush(stdout);
+			
+			//  Read coordinates from file and send it to RPI
+
+		    FILE *file;
+
+		    size_t fileLen;
+
+		    // Wait for file to be created, then Open file  
+		    //
+		    while(1){
+			    file = fopen("/home/pi/ShotTracker/integrated/images/detected/coordinates.txt", "r");
+			    delay(500);
+
+			    if (file){
+				    break;
+			      //fprintf(stderr, "Unable to open file ");
+			      //return 0;
+			    }
+		    }
+			
+		    unsigned char *buffer;
+		    fseek(file, 0, SEEK_END);
+		    fileLen=ftell(file);
+		    fseek(file, 0, SEEK_SET);
+
+		    buffer = (unsigned char *)malloc(fileLen+1);
+		    if (!buffer)
+		    {
+		      fprintf(stderr, "Memory error!");
+		      fclose(file);
+		      return 0;
+		    }
+
+		    fread(buffer, fileLen, 1, file);
+
+		    //size_t input_size = fileLen;
+
+
+			opmodeLora();
+			opmode(OPMODE_STANDBY);
+
+			writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec
+
+			configPower(23);
+
+			printf("Send packets at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
+			printf("------------------\n");
+
+			//printf("%s", buffer);
+			delay(1000);
+
+			//for(int i=0; i<10; ++i) {
+			    txlora(buffer, fileLen);
+			    //txlora(buffer, strlen((unsigned char *)buffer));
+			//    delay(50);
+			//}	
+			
+		        free(buffer);
+		    //free(encoded_data);
+		        
+			fclose(file);
+			rbuff = NULL;
+
+			// remove coordinates file
+			remove("/home/pi/ShotTracker/integrated/images/detected/coordinates.txt");
+			   
+			// mode change for another signal input
+			SetupLoRa();	//	needed for mode_change ( TX -> RX mode )
+			opmodeLora();
+			opmode(OPMODE_STANDBY);
+			opmode(OPMODE_RX);
+
+//			fflush(stdout);
 			//  activate camera : I_c
 			//  warp the image : I_w
 			//  detect coordinates : I_d
 			//  send coordinates to Sound Sensor Pi
 			continue;	//	 continue listening signals
 		  }
+
 		  else if(!strcmp(rbuff, "sig_sess_fin")){	//	if sig_sess_fin
 		  	printf("Session finished\n");
+			
+
+			// Send Warped Image
+			// We assume that the image is encoded into base64 after EVERY bullet trace detection..
+			// It will be better to only encode the image when transmitting, but maybe later.
+			// Made the image to be encoded only after sig_sess_fin .
+			opmodeLora();
+			opmode(OPMODE_STANDBY);
+
+			writeReg(RegPaRamp, (readReg(RegPaRamp) & 0xF0) | 0x08); // set PA ramp-up time 50 uSec
+
+			configPower(23);
+
+			printf("Send packets at SF%i on %.6lf Mhz.\n", sf,(double)freq/1000000);
+			printf("------------------\n");
+
+			for(int i=0; i<10; ++i) {
+			    txlora(ACK, strlen((char *)ACK));
+			    delay(50);
+			}	
+
+		    FILE *file;
+
+		    size_t fileLen;
+		    //const char *file_path = "/Users/psh/Documents/repo/ImageRW/jerry.jpeg";
+
+		    //Open file                                                                                                                                                                                                
+		    file = fopen("/home/pi/ShotTracker/integrated/images/warped/warped.jpeg", "rb");
+		    // file = fopen("/Users/psh/Documents/repo/ImageRW/linux-bsd.jpeg", "rb");
+
+		    if (!file)
+		    {
+		      fprintf(stderr, "Unable to open file ");
+		      return 0;
+		    }
+
+		    unsigned char *buffer;
+		    fseek(file, 0, SEEK_END);
+		    fileLen=ftell(file);
+		    fseek(file, 0, SEEK_SET);
+
+		    buffer = (unsigned char *)malloc(fileLen+1);
+		    if (!buffer)
+		    {
+		      fprintf(stderr, "Memory error!");
+		      fclose(file);
+		      return 0;
+		    }
+
+		    fread(buffer, fileLen, 1, file);
+
+		    size_t input_size = fileLen;
+		    //strlen(buffer);
+		    char *encoded_data = base64_encode(buffer, input_size, &input_size);
+		    //printf("Encoded Data is: %s \n", encoded_data);
+
+		    free(buffer);
+		    //free(encoded_data);
+		    fclose(file);
+			//  End of encoding : encoded_data
+		
+		    	//  Start image transmission
+		    
+		   // txlora(ACK, strlen((char *)encoded_size));
+		    
+
+
+
+
 			fflush(stdout);
 			//  send I_w to Sound Sensor Pi
-			break;	//  start a new session and set a new target image
+			goto setTargetNumber;
+			//break;	//  start a new session and set a new target image
+
+			/*
+			// mode change for another signal input
+			SetupLoRa();	//	needed for mode_change ( TX -> RX mode )
+			opmodeLora();
+			opmode(OPMODE_STANDBY);
+			opmode(OPMODE_RX);
+			*/
 		  }
+
+
+
 		  else if(!strcmp(rbuff, "sig_shutdown\n")){	//	if sig_shutdown
 		  	printf("Shutdown\n");
 			fflush(stdout);

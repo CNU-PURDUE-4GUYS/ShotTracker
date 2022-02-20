@@ -30,7 +30,7 @@ class ObjectDetection(object):
         return self._source
 
     @torch.no_grad()
-    def run(self,                                                                                        weights='/home/pi/ShotTracker/integrated/yolov5/weights/M_320_16_500.pt',  # custom trained path(s)
+    def run(self,                                                                                        weights='/home/pi/ShotTracker/integrated/yolov5/weights/n_640_32_600.pt',  # custom trained path(s)
             source='/home/pi/ShotTracker/integrated/images/warped/warped.jpeg',  # file/dir/URL/glob, 0 for webcam
             data='/home/pi/ShotTracker/integrated/yolov5/coco128.yaml',  # dataset.yaml path
             imgsz=(640, 640),  # inference size (height, width)
@@ -207,5 +207,9 @@ class ObjectDetection(object):
                             save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
                             vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                         vid_writer[i].write(im0)
+        
+        f_txt = open(project+'/coordinates.txt', 'w')
+        f_txt.write(str(bullets)+"!")
+        f_txt.close()
         return(bullets)
 
